@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="ZUMOAPPNAME.Droid" Label="ZUMOAPPNAME.Droid" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.9" Label="Microsoft.Bcl 1.1.9" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.14" Label="Microsoft.Bcl.Build 1.0.14" Category="Package" />
+    <Node Id="Microsoft.Data.Edm 5.6.4" Label="Microsoft.Data.Edm 5.6.4" Category="Package" />
+    <Node Id="Microsoft.Data.OData 5.6.4" Label="Microsoft.Data.OData 5.6.4" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.28" Label="Microsoft.Net.Http 2.2.28" Category="Package" />
+    <Node Id="Newtonsoft.Json 6.0.4" Label="Newtonsoft.Json 6.0.4" Category="Package" />
+    <Node Id="SQLitePCL 3.8.7.2" Label="SQLitePCL 3.8.7.2" Category="Package" />
+    <Node Id="System.Spatial 5.6.4" Label="System.Spatial 5.6.4" Category="Package" />
+    <Node Id="WindowsAzure.MobileServices 2.0.0-beta" Label="WindowsAzure.MobileServices 2.0.0-beta" Category="Package" />
+    <Node Id="WindowsAzure.MobileServices.Files 0.0.2-poc" Label="WindowsAzure.MobileServices.Files 0.0.2-poc" Category="Package" />
+    <Node Id="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Label="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Category="Package" />
+    <Node Id="WindowsAzure.Storage 4.4.1-preview" Label="WindowsAzure.Storage 4.4.1-preview" Category="Package" />
+    <Node Id="Xamarin.Android.Support.v4 22.1.1.1" Label="Xamarin.Android.Support.v4 22.1.1.1" Category="Package" />
+    <Node Id="Xamarin.Forms 1.4.2.6359" Label="Xamarin.Forms 1.4.2.6359" Category="Package" />
+  </Nodes>
+  <Links>
+    <Link Source="Microsoft.Bcl 1.1.9" Target="Microsoft.Bcl.Build 1.0.14" Category="Package Dependency" />
+    <Link Source="Microsoft.Data.OData 5.6.4" Target="System.Spatial 5.6.4" Category="Package Dependency" />
+    <Link Source="Microsoft.Data.OData 5.6.4" Target="Microsoft.Data.Edm 5.6.4" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.28" Target="Microsoft.Bcl 1.1.9" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.28" Target="Microsoft.Bcl.Build 1.0.14" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices 2.0.0-beta" Target="Newtonsoft.Json 6.0.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices 2.0.0-beta" Target="Microsoft.Bcl 1.1.9" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices 2.0.0-beta" Target="Microsoft.Net.Http 2.2.28" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices.Files 0.0.2-poc" Target="WindowsAzure.MobileServices 2.0.0-beta" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices.Files 0.0.2-poc" Target="WindowsAzure.Storage 4.4.1-preview" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Target="Newtonsoft.Json 6.0.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Target="Microsoft.Bcl 1.1.9" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Target="Microsoft.Net.Http 2.2.28" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Target="SQLitePCL 3.8.7.2" Category="Package Dependency" />
+    <Link Source="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Target="WindowsAzure.MobileServices 2.0.0-beta" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Microsoft.Data.OData 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="System.Spatial 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Microsoft.Data.OData 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="System.Spatial 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Microsoft.Data.OData 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Newtonsoft.Json 6.0.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Microsoft.Data.OData 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Microsoft.Data.OData 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Microsoft.Data.OData 5.6.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Newtonsoft.Json 6.0.4" Category="Package Dependency" />
+    <Link Source="WindowsAzure.Storage 4.4.1-preview" Target="Microsoft.Data.OData 5.6.4" Category="Package Dependency" />
+    <Link Source="Xamarin.Forms 1.4.2.6359" Target="Xamarin.Android.Support.v4 22.1.1.1" Category="Package Dependency" />
+    <Link Source="ZUMOAPPNAME.Droid" Target="WindowsAzure.MobileServices.Files 0.0.2-poc" Category="Installed Package" />
+    <Link Source="ZUMOAPPNAME.Droid" Target="WindowsAzure.MobileServices.SQLiteStore 2.0.0-beta" Category="Installed Package" />
+    <Link Source="ZUMOAPPNAME.Droid" Target="Xamarin.Forms 1.4.2.6359" Category="Installed Package" />
+  </Links>
+  <Categories>
+    <Category Id="Project" />
+    <Category Id="Package" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Project" ValueLabel="True">
+      <Condition Expression="HasCategory('Project')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Package Dependency" ValueLabel="True">
+      <Condition Expression="HasCategory('Package Dependency')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>
