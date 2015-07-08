@@ -73,8 +73,10 @@ MobileServiceClient client = new MobileServiceClient("app_url", "gateway_url", "
 client.InitializeFileSync(new MyFileSyncHandler(), store);
 ```
 
+> The ```IFileSyncHandler``` implementation in the *Todo list* application is defined in the ```TodoItemFileSyncHandler.cs``` file.
+
 ####Creating and uploading a file
-The most common way of working with the file management API is through a set of extension methods on the ```IMobileServiceTable<T>``` interface, so in order to use the API, you must have a reference to the table you're working with:
+The most common way of working with the file management API is through a set of extension methods on the ```IMobileServiceTable<T>``` interface, so in order to use the API, you must have a reference to the table you're working with.
 
 ```c#
 MobileServiceFile file = await myTable.AddFileAsync(myItem, "file_name");
@@ -86,6 +88,9 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 ```
 
 In the offline scenario, the upload will occur when the application initiates a synchronization, when that happens, the runtime will begin processing the operations queue and, once it finds this operation, it will invoke the ```GetDataSource``` method on the ```IFileSynchHandler``` instance provided by the application in order to retrieve the file contents for the upload.
+
+>The file management enabled version of the *Todo list* application maintains the pattern used in 
+>the *Todo list* quick start and maintains all file management operations in the ```TodoItemManager.cs``` file
 
 ####Deleting a file
 To delete a file, you can follow the same pattern described above and use the ```DeleteFileAsync``` method on the ```IMobileServiceTable<T>``` instance:
@@ -109,4 +114,7 @@ IEnumerable<MobileServiceFile> files = await myTable.GetFilesAsync(myItem);
 ``` 
 This method returns a list of files associated with the data item provided. It's important to remember that this is a ***local*** operation and will return the files based on the state of the object when it was last synchronized.
 
-To get an updated list of files from the server, you can initiate a sync operation as described in the *synchronizing file changes* section
+To get an updated list of files from the server, you can initiate a sync operation as described in the *synchronizing file changes* section.
+
+>On the *Todo list* sample application, the item's images are retrieved in the ```TodoItemViewModel``` class.
+
