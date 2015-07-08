@@ -118,3 +118,9 @@ To get an updated list of files from the server, you can initiate a sync operati
 
 >On the *Todo list* sample application, the item's images are retrieved in the ```TodoItemViewModel``` class.
 
+##TODO:
+- Service changes
+    - Comment server side code 
+    - Document connection string details
+- Client sync mechanism
+- Online scenario
