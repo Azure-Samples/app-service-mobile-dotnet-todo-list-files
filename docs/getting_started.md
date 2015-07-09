@@ -1,3 +1,5 @@
+[TOC]
+
 #Getting started with file management
 This tutorial shows you how to manage (create, download, delete and list) files using the Azure Mobile Apps client SDK. At the end of this guide, you'll have simple updated version of the *To do list* (***addlink***)  quickstart app that supports file attachments. 
 
@@ -6,6 +8,7 @@ To complete this tutorial, you'll need the following:
 * An active Azure account. If you don't have an account, you can sign up for an Azure trial and get up to 10 free mobile apps that you can keep using even after your trial ends. For details, see [Azure Free Trial](http://azure.microsoft.com/pricing/free-trial/).
 * [Visual Studio Professional 2013](https://go.microsoft.com/fwLink/p/?LinkID=257546)
 * A Xamarin Account
+
 
 ##Azure Mobile Services File Management
 TODO: Describe the goals of the functionality exposed by the SDK, the patterns and other relevant implementation/behavior details.
@@ -20,7 +23,8 @@ Examples of what we need to document:
 	 - Examples on how to extend 
  - ???
 
-##Offline file management
+##Mobile Services Client SDK
+###Offline file management
 The Azure Mobile Services Client SDK provides offline file management support, allowing you to synchronize file changes when network connectivity is available.
 
 The updated *To do list app* takes advantage of this functionality to expose the following features:
@@ -30,8 +34,6 @@ The updated *To do list app* takes advantage of this functionality to expose the
  - Items and files created by other users are automatically downloaded by the application, making them available offline
  - Items and files deleted by other users are removed from the local device
 
-
-###Offline flow
 When working in offline mode, file management operations are saved locally, until the application synchronizes those changes (typically when network availability is restored or when the user explicitly requests a synchronization via an application gesture).
 
 The diagram below shows the sequence of operations for a file creation:
@@ -117,6 +119,31 @@ This method returns a list of files associated with the data item provided. It's
 To get an updated list of files from the server, you can initiate a sync operation as described in the *synchronizing file changes* section.
 
 >On the *Todo list* sample application, the item's images are retrieved in the ```TodoItemViewModel``` class.
+##Service SDK
+In order to support the file management capabilities exposed by the client SDK, the following changes were made to the service:
+
+ - A storage controller named ```TodoItemStorageController``` (inheriting from the new Mobile Apps type ```StorageController<T>```) was created
+	 - Storage token issuance
+	 - File delete operations
+	 - File list operations
+ - The storage account connection string was added to the service settings
+	 - Currently, the configuration is named *mS_AzureStorageAccountConnectionString*
+###Storage API resources
+The new controller exposes two sub-resources under the record it manages:
+
+ - StorageToken
+	 - HTTP POST : Creates a storage token
+		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
+ - MobileServiceFiles
+	 - HTTP GET: Retrieves a list of files associated with the record
+		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
+	 - HTTP DELETE: Deletes the file specified in the file resource identifier
+		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles/{fileid}```
+
+###IContainerNameResolver
+The *Todo list* sample uses the default behavior, with one container per record. If a custom container mapping or naming convention is desired, a custom ```IContainerNameResolver``` may be passed into the token generation or file management controller methods. If provided, this custom resolver will be used any time the runtime needs to resolve a container name for a record or file.
+
+
 
 ##TODO:
 - Service changes
