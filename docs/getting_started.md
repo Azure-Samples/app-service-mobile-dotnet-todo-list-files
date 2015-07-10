@@ -1,16 +1,17 @@
 [TOC]
 
-#Getting started with file management
-This tutorial shows you how to manage (create, download, delete and list) files using the Azure Mobile Apps client SDK. At the end of this guide, you'll have simple updated version of the *To do list* (***addlink***)  quickstart app that supports file attachments. 
+#File Management for Mobile Apps - preview client and server SDK for Xamarin.Forms
 
-To complete this tutorial, you'll need the following:
+Prerequisites:
+- Xamarin account 
+- Visual Studio 2013 for publishing server packages
+- Android or iOS emulator
+- A provisioned Azure Mobile App
+- An Azure Storage acount
 
-* An active Azure account. If you don't have an account, you can sign up for an Azure trial and get up to 10 free mobile apps that you can keep using even after your trial ends. For details, see [Azure Free Trial](http://azure.microsoft.com/pricing/free-trial/).
-* [Visual Studio Professional 2013](https://go.microsoft.com/fwLink/p/?LinkID=257546)
-* A Xamarin Account
 
 
-##Azure Mobile Services File Management
+##Azure Mobile Apps File Management
 TODO: Describe the goals of the functionality exposed by the SDK, the patterns and other relevant implementation/behavior details.
 
 Examples of what we need to document:
