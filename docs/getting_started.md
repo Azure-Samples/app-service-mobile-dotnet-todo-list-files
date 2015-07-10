@@ -75,7 +75,7 @@ MobileServiceClient client = new MobileServiceClient("app_url", "gateway_url", "
 client.InitializeFileSync(new MyFileSyncHandler(), store);
 ```
 
-> The ```IFileSyncHandler``` implementation in the *Todo list* application is defined in the ```TodoItemFileSyncHandler.cs``` file.
+> The ```IFileSyncHandler``` implementation in the *To do list* application is defined in the ```TodoItemFileSyncHandler.cs``` file.
 
 ####Creating and uploading a file
 The most common way of working with the file management API is through a set of extension methods on the ```IMobileServiceTable<T>``` interface, so in order to use the API, you must have a reference to the table you're working with.
@@ -91,8 +91,8 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 
 In the offline scenario, the upload will occur when the application initiates a synchronization, when that happens, the runtime will begin processing the operations queue and, once it finds this operation, it will invoke the ```GetDataSource``` method on the ```IFileSynchHandler``` instance provided by the application in order to retrieve the file contents for the upload.
 
->The file management enabled version of the *Todo list* application maintains the pattern used in 
->the *Todo list* quick start and maintains all file management operations in the ```TodoItemManager.cs``` file
+>The file management enabled version of the *To do list* application maintains the pattern used in 
+>the *To do list* quick start and maintains all file management operations in the ```TodoItemManager.cs``` file
 
 ####Deleting a file
 To delete a file, you can follow the same pattern described above and use the ```DeleteFileAsync``` method on the ```IMobileServiceTable<T>``` instance:
@@ -118,7 +118,17 @@ This method returns a list of files associated with the data item provided. It's
 
 To get an updated list of files from the server, you can initiate a sync operation as described in the *synchronizing file changes* section.
 
->On the *Todo list* sample application, the item's images are retrieved in the ```TodoItemViewModel``` class.
+>On the *To do list* sample application, the item's images are retrieved in the ```TodoItemViewModel``` class.
+
+####Client sync process
+
+> NOTE:
+> For clarity, this section describes the approach taken by the *To do list* application. This is temporary and **will** change in future iterations of the file management feature.
+
+The *To do list* application detects record changes when performing a standard data pull operation and uses that as a trigger to retrieve potential file changes.
+
+To detect changes, the *To do list* application uses a custom ```MobileServiceLocalStore``` (located under the *Helpers* project folder) that wraps the built in ```MobileServiceSQLiteStore``` and raises a change event when the runtime creates, updates or deletes records. This event is used by the application to initiate a file synchronization operation for the changed record.
+
 ##Service SDK
 In order to support the file management capabilities exposed by the client SDK, the following changes were made to the service:
 
@@ -141,13 +151,5 @@ The new controller exposes two sub-resources under the record it manages:
 		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles/{fileid}```
 
 ###IContainerNameResolver
-The *Todo list* sample uses the default behavior, with one container per record. If a custom container mapping or naming convention is desired, a custom ```IContainerNameResolver``` may be passed into the token generation or file management controller methods. If provided, this custom resolver will be used any time the runtime needs to resolve a container name for a record or file.
+The *To do list* sample uses the default behavior, with one container per record. If a custom container mapping or naming convention is desired, a custom ```IContainerNameResolver``` may be passed into the token generation or file management controller methods. If provided, this custom resolver will be used any time the runtime needs to resolve a container name for a record or file.
 
-
-
-##TODO:
-- Service changes
-    - Comment server side code 
-    - Document connection string details
-- Client sync mechanism
-- Online scenario
