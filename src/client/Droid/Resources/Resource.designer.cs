@@ -26,6 +26,10 @@ namespace ZUMOAPPNAME.Droid
 		
 		public static void UpdateIdValues()
 		{
+			global::Microsoft.WindowsAzure.Mobile.Files.Resource.String.ApplicationName = global::ZUMOAPPNAME.Droid.Resource.String.ApplicationName;
+			global::Microsoft.WindowsAzure.Mobile.Files.Resource.String.Hello = global::ZUMOAPPNAME.Droid.Resource.String.Hello;
+			global::Xamarin.Forms.Platform.Resource.String.ApplicationName = global::ZUMOAPPNAME.Droid.Resource.String.ApplicationName;
+			global::Xamarin.Forms.Platform.Resource.String.Hello = global::ZUMOAPPNAME.Droid.Resource.String.Hello;
 		}
 		
 		public partial class Attribute
@@ -53,6 +57,25 @@ namespace ZUMOAPPNAME.Droid
 			}
 			
 			private Drawable()
+			{
+			}
+		}
+		
+		public partial class String
+		{
+			
+			// aapt resource value: 0x7f030001
+			public const int ApplicationName = 2130903041;
+			
+			// aapt resource value: 0x7f030000
+			public const int Hello = 2130903040;
+			
+			static String()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private String()
 			{
 			}
 		}

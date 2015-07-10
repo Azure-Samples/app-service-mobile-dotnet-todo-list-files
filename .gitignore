@@ -130,6 +130,11 @@ publish/
 
 # NuGet Packages Directory
 packages/*
+src/client/packages/*
+src/service/packages/*
+
+# Xamarin components
+src/client/Components/*
 ## TODO: If the tool you use requires repositories.config
 ## uncomment the next line
 #!packages/repositories.config
