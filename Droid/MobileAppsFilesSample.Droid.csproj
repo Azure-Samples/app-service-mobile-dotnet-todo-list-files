@@ -130,7 +130,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="FileHelper.cs" />
-    <Compile Include="Helpers\DelegatingStore.cs" />
+    <Compile Include="Helpers\TodoItemSQLiteStore.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

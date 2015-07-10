@@ -30,7 +30,7 @@ namespace MobileAppsFilesSample
                 Constants.GatewayURL,
                 Constants.ApplicationKey, new LoggingHandler(true));
             
-            var store = new MobileServiceSQLiteStoreWithLogging("localstore.db", true, true, true);
+            var store = new TodoItemSQLiteStore("localstore.db", true, true, true);
             store.ItemChanged += StoreItemChanged;
             store.DefineTable<TodoItem>();
 

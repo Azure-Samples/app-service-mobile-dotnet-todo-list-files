@@ -15,7 +15,7 @@ using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 
 namespace MobileAppsFilesSample.Droid.Helpers
 {
-    public class MobileServiceSQLiteStoreWithLogging : MobileServiceSQLiteStore
+    public class TodoItemSQLiteStore : MobileServiceSQLiteStore
     {
         private bool logResults;
         private bool logParameters;
@@ -23,7 +23,7 @@ namespace MobileAppsFilesSample.Droid.Helpers
 
         public event EventHandler<ItemChangedEventArgs> ItemChanged;
 
-        public MobileServiceSQLiteStoreWithLogging(string fileName, bool loggingEnabled = false, bool logResults = false, bool logParameters = false)
+        public TodoItemSQLiteStore(string fileName, bool loggingEnabled = false, bool logResults = false, bool logParameters = false)
             : base(fileName)
         {
             this.loggingEnabled = loggingEnabled;
@@ -34,7 +34,7 @@ namespace MobileAppsFilesSample.Droid.Helpers
         public async override Task UpsertAsync(string tableName, IEnumerable<Newtonsoft.Json.Linq.JObject> items, bool ignoreMissingColumns)
         {
 
-            if (ignoreMissingColumns && !tableName.StartsWith("__")) // This flag indicates an upsert operation from the server
+            if (ignoreMissingColumns && !tableName.StartsWith("__")) // The ignoreMissingColumns flag indicates an upsert operation from the server
             {
                 foreach (var item in items)
                 {
@@ -60,10 +60,13 @@ namespace MobileAppsFilesSample.Droid.Helpers
         public async override Task DeleteAsync(string tableName, IEnumerable<string> ids)
         {
             await base.DeleteAsync(tableName, ids);
-
-            foreach (var id in ids)
+            
+            if (!tableName.StartsWith("__"))
             {
-                OnItemChanged(new ItemChangedEventArgs(id, tableName, ItemChangeType.Deleted));
+                foreach (var id in ids)
+                {
+                    OnItemChanged(new ItemChangedEventArgs(id, tableName, ItemChangeType.Deleted));
+                }
             }
         }
 
