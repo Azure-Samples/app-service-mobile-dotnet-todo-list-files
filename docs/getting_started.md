@@ -1,5 +1,3 @@
-[TOC]
-
 #File Management for Mobile Apps - preview client and server SDK for Xamarin.Forms
 
 Prerequisites:
@@ -8,8 +6,6 @@ Prerequisites:
 - Android or iOS emulator
 - A provisioned Azure Mobile App
 - An Azure Storage acount
-
-
 
 ##Azure Mobile Apps File Management
 TODO: Describe the goals of the functionality exposed by the SDK, the patterns and other relevant implementation/behavior details.
@@ -137,8 +133,9 @@ In order to support the file management capabilities exposed by the client SDK, 
 	 - Storage token issuance
 	 - File delete operations
 	 - File list operations
- - The storage account connection string was added to the service settings
-	 - Currently, the configuration is named *mS_AzureStorageAccountConnectionString*
+ - The storage account *connection string* was added to the service settings
+	 - Currently, the configuration must be named *mS_AzureStorageAccountConnectionString*. It needs to be in the Connection Strings section of your Web App configuration.
+	 
 ###Storage API resources
 The new controller exposes two sub-resources under the record it manages:
 
