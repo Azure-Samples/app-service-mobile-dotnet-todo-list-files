@@ -11,6 +11,7 @@ using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using MobileAppsFilesSample.Droid;
 using System.IO;
 using MobileAppsFilesSample.Droid.Helpers;
+using Microsoft.WindowsAzure.MobileServices.Eventing;
 
 namespace MobileAppsFilesSample
 {
@@ -22,25 +23,34 @@ namespace MobileAppsFilesSample
         // Azure
         IMobileServiceSyncTable<TodoItem> todoTable;
         MobileServiceClient client;
+        IDisposable eventSubscription;
 
         public TodoItemManager()
         {
             client = new MobileServiceClient(
                 Constants.ApplicationURL,
                 Constants.GatewayURL,
-                Constants.ApplicationKey, new LoggingHandler(true));
-            
-            var store = new TodoItemSQLiteStore("localstore.db", true, true, true);
-            store.ItemChanged += StoreItemChanged;
+                //Constants.ApplicationKey, new LoggingHandler(false));
+                Constants.ApplicationKey, null);
+
+           // var store = new TodoItemSQLiteStore("localstore.db", false, false, false);
+            var store = new MobileServiceSQLiteStore("localstore.db");
             store.DefineTable<TodoItem>();
 
             // FILES: Initialize file sync
-            this.client.InitializeFileSync(new TodoItemFileSyncHandler(this), store);
+            this.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(this), store);
 
             //Initializes the SyncContext using the default IMobileServiceSyncHandler.
             this.client.SyncContext.InitializeAsync(store);
 
             this.todoTable = client.GetSyncTable<TodoItem>();
+
+            eventSubscription = this.client.EventManager.Subscribe<IMobileServiceEvent>(GeneralEventHandler);
+        }
+
+        private void GeneralEventHandler(IMobileServiceEvent mobileServiceEvent)
+        {
+            Debug.WriteLine("Event handled: " + mobileServiceEvent.Name);
         }
 
         public async Task SyncAsync()
@@ -82,23 +92,6 @@ namespace MobileAppsFilesSample
                     }
                 }
             }
-        }
-
-        public async Task<TodoItem> GetTaskAsync(string id)
-        {
-            try
-            {
-                return await todoTable.LookupAsync(id);
-            }
-            catch (MobileServiceInvalidOperationException msioe)
-            {
-                Debug.WriteLine(@"INVALID {0}", msioe.Message);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(@"ERROR {0}", e.Message);
-            }
-            return null;
         }
 
         public async Task<IEnumerable<TodoItem>> GetTodoItemsAsync()
@@ -178,28 +171,5 @@ namespace MobileAppsFilesSample
             // FILES: Get files (local)
             return await this.todoTable.GetFilesAsync(todoItem);
         }
-
-        private async void StoreItemChanged(object sender, ItemChangedEventArgs e)
-        {
-            if (string.Compare(e.TableName, "TodoItem") == 0)
-            {
-                TodoItem todo = await this.todoTable.LookupAsync(e.ItemId);
-
-                if (todo != null)
-                {
-                    if (e.ChangeType == ItemChangeType.AddedOrUpdated)
-                    {
-                        // Retrieve files
-                        await this.todoTable.PullFilesAsync(todo);
-                    }
-                    else if (e.ChangeType == ItemChangeType.Deleted)
-                    {
-                        // Purge all files
-                        await this.todoTable.PurgeFilesAsync(todo);
-                    }
-                }
-            }
-        }
     }
 }
-

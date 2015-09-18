@@ -15,6 +15,12 @@ namespace fcxfquickstartService.Controllers
 {
     public class TodoItemStorageController : StorageController<TodoItem>
     {
+        public TodoItemStorageController()
+            : base(new AzureStorageProvider(""))
+        {
+
+        }
+
         [HttpPost]
         [Route("tables/TodoItem/{id}/StorageToken")]
         public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest value)
