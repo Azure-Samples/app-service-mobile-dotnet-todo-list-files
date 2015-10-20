@@ -30,8 +30,8 @@ namespace MobileAppsFilesSample
             client = new MobileServiceClient(
                 Constants.ApplicationURL,
                 Constants.GatewayURL,
-                //Constants.ApplicationKey, new LoggingHandler(false));
-                Constants.ApplicationKey, null);
+                Constants.ApplicationKey, new LoggingHandler(false));
+//                Constants.ApplicationKey, null);
 
            // var store = new TodoItemSQLiteStore("localstore.db", false, false, false);
             var store = new MobileServiceSQLiteStore("localstore.db");
