@@ -1,28 +1,42 @@
-#File Management for Mobile Apps - preview client and server SDK for Xamarin.Forms
+#File Management for Mobile Apps - preview client and server SDK 
 
 Prerequisites:
 - Xamarin account 
-- Visual Studio 2013 for publishing server packages
+- Visual Studio 2013 (or higher) for publishing server packages
 - Android or iOS emulator
 - A provisioned Azure Mobile App
-- An Azure Storage acount
+- An Azure Storage acount (either classic or new)
 
-##Azure Mobile Apps File Management
-TODO: Describe the goals of the functionality exposed by the SDK, the patterns and other relevant implementation/behavior details.
+##Azure Mobile Server SDK for Files
+In order to support the file management capabilities exposed by the client SDK, the following changes were made to the service:
 
-Examples of what we need to document:
+ - A storage controller named ```TodoItemStorageController``` (inheriting from the new Mobile Apps type ```StorageController<T>```) was created
+	 - Storage token issuance
+	 - File delete operations
+	 - File list operations
+ - The storage account *connection string* was added to the service settings
+	 - The default configuration key is *MS_AzureStorageAccountConnectionString*,  in the Connection Strings section of your Web App configuration.
+	 - To use a different connection string value, pass it to the constructor of `StorageController`.
+	 
+###Storage API resources
+The new controller exposes two sub-resources under the record it manages:
 
- - Communication pattern
-	 - Client, storage, service, etc.
- - Data items/files relationships (file scoping)
- - SAS issuance, caching, etc.
- - Default "no server state" behavior
-	 - Examples on how to extend 
- - ???
+ - StorageToken
+	 - HTTP POST : Creates a storage token
+		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
+ - MobileServiceFiles
+	 - HTTP GET: Retrieves a list of files associated with the record
+		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
+	 - HTTP DELETE: Deletes the file specified in the file resource identifier
+		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles/{fileid}```
 
-##Mobile Services Client SDK
+###IContainerNameResolver
+The *To do list* sample uses the default behavior, with one container per record. If a custom container mapping or naming convention is desired, a custom ```IContainerNameResolver``` may be passed into the token generation or file management controller methods. If provided, this custom resolver will be used any time the runtime needs to resolve a container name for a record or file.
+
+
+##Mobile Apps Client SDK
 ###Offline file management
-The Azure Mobile Services Client SDK provides offline file management support, allowing you to synchronize file changes when network connectivity is available.
+The Azure Mobile Apps Client SDK provides offline file management support, allowing you to synchronize file changes when network connectivity is available.
 
 The updated *To do list app* takes advantage of this functionality to expose the following features:
 
@@ -125,29 +139,3 @@ To get an updated list of files from the server, you can initiate a sync operati
 The *To do list* application detects record changes when performing a standard data pull operation and uses that as a trigger to retrieve potential file changes.
 
 To detect changes, the *To do list* application uses a custom ```MobileServiceLocalStore``` (located under the *Helpers* project folder) that wraps the built in ```MobileServiceSQLiteStore``` and raises a change event when the runtime creates, updates or deletes records. This event is used by the application to initiate a file synchronization operation for the changed record.
-
-##Service SDK
-In order to support the file management capabilities exposed by the client SDK, the following changes were made to the service:
-
- - A storage controller named ```TodoItemStorageController``` (inheriting from the new Mobile Apps type ```StorageController<T>```) was created
-	 - Storage token issuance
-	 - File delete operations
-	 - File list operations
- - The storage account *connection string* was added to the service settings
-	 - Currently, the configuration must be named *mS_AzureStorageAccountConnectionString*. It needs to be in the Connection Strings section of your Web App configuration.
-	 
-###Storage API resources
-The new controller exposes two sub-resources under the record it manages:
-
- - StorageToken
-	 - HTTP POST : Creates a storage token
-		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
- - MobileServiceFiles
-	 - HTTP GET: Retrieves a list of files associated with the record
-		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
-	 - HTTP DELETE: Deletes the file specified in the file resource identifier
-		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles/{fileid}```
-
-###IContainerNameResolver
-The *To do list* sample uses the default behavior, with one container per record. If a custom container mapping or naming convention is desired, a custom ```IContainerNameResolver``` may be passed into the token generation or file management controller methods. If provided, this custom resolver will be used any time the runtime needs to resolve a container name for a record or file.
-
