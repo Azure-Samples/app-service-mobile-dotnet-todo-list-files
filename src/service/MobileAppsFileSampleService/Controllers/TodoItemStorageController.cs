@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Microsoft.Azure.Mobile.Server.Security;
 using Microsoft.WindowsAzure.Mobile.Service.Files;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Controllers;
@@ -16,7 +15,6 @@ namespace fcxfquickstartService.Controllers
     public class TodoItemStorageController : StorageController<TodoItem>
     {
         public TodoItemStorageController()
-            : base(new AzureStorageProvider(""))
         {
 
         }

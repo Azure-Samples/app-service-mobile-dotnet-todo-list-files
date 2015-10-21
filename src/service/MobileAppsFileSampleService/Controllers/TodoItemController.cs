@@ -15,7 +15,7 @@ namespace MobileAppsFileSampleService.Controllers
         {
             base.Initialize(controllerContext);
             MobileAppsFileSampleContext context = new MobileAppsFileSampleContext();
-            DomainManager = new EntityDomainManager<TodoItem>(context, Request, Services);
+            DomainManager = new EntityDomainManager<TodoItem>(context, Request);
         }
 
         // GET tables/TodoItem
