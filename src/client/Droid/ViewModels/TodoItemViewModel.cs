@@ -92,11 +92,13 @@ namespace MobileAppsFilesSample
             var mediaPicker = new MediaPicker(App.UIContext);
             var photo = await mediaPicker.TakePhotoAsync(new StoreCameraMediaOptions());
 
-            MobileServiceFile file = await this.itemManager.AddImage(this.todoItem, photo.Path);
+            if (photo != null)
+            {
+                MobileServiceFile file = await this.itemManager.AddImage(this.todoItem, photo.Path);
 
-            var image = new TodoItemImageViewModel(file, this.todoItem, DeleteImage);
-
-            this.images.Add(image);
+                var image = new TodoItemImageViewModel(file, this.todoItem, DeleteImage);
+                this.images.Add(image);
+            }
         }
 
         internal TodoItem GetItem()
