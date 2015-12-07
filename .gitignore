@@ -1,0 +1,15 @@
+.vs/
+WinApp/obj/
+Droid/obj/
+packages/
+Droid/bin/
+WinPhone81/obj/
+iOS/bin/
+iOS/obj/
+Components/
+*.bak
+*.user
+*.suo
+donnam_testforms/bin/
+donnam_testforms/obj/
+Droid/docsync.log
