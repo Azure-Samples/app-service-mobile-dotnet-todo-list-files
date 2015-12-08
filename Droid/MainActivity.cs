@@ -17,7 +17,7 @@ namespace MobileAppsFilesSample.Droid
 		Theme = "@android:style/Theme.Holo.Light")]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
-		protected override void OnCreate (Bundle bundle)
+		protected override async void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 
@@ -25,7 +25,7 @@ namespace MobileAppsFilesSample.Droid
 			Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
             App.UIContext = this;
 
-            LoadApplication (new App());
+            LoadApplication (await App.InitAsync());
 
 		}
 	}

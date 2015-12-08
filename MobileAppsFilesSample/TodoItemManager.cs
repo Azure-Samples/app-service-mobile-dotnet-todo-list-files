@@ -29,27 +29,32 @@ namespace MobileAppsFilesSample
 
         IMobileServiceSyncTable<TodoItem> todoTable;
 
-        public TodoItemManager()
-        {
-			this.client = new MobileServiceClient(Constants.ApplicationURL, new LoggingHandler(true));
+        private TodoItemManager() { }
 
-			var store = new MobileServiceSQLiteStore("localstore.db");
+        public static async Task<TodoItemManager> CreateAsync()
+        {
+            var result = new TodoItemManager();
+            result.client = new MobileServiceClient(Constants.ApplicationURL, new LoggingHandler(true));
+
+            var store = new MobileServiceSQLiteStore("localstore.db");
             store.DefineTable<TodoItem>();
 
             // FILES: Initialize file sync
-            this.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(this), store);
+            result.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(result), store);
 
             //Initializes the SyncContext using the default IMobileServiceSyncHandler.
-            this.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.AllNotifications);
+            await result.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.AllNotifications);
 
-            this.todoTable = client.GetSyncTable<TodoItem>();
+            result.todoTable = result.client.GetSyncTable<TodoItem>();
 
-			this.client.EventManager.Subscribe<StoreOperationCompletedEvent>(GeneralEventHandler);
+            result.client.EventManager.Subscribe<StoreOperationCompletedEvent>(result.GeneralEventHandler);
+
+            return result;
         }
 
-		private void GeneralEventHandler(StoreOperationCompletedEvent mobileServiceEvent)
+        private void GeneralEventHandler(StoreOperationCompletedEvent mobileServiceEvent)
         {
-			Debug.WriteLine("Event handled: " + mobileServiceEvent.Operation.RecordId);
+            Debug.WriteLine("Event handled: " + mobileServiceEvent.Operation.RecordId);
         }
 
         public async Task SyncAsync()

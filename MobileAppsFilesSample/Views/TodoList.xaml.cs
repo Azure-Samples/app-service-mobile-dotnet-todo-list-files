@@ -13,17 +13,23 @@ namespace MobileAppsFilesSample
     {
         TodoItemManager manager;
 
-        public TodoList()
+        private TodoList()
         {
             InitializeComponent();
-
-            manager = new TodoItemManager();
 
             // OnPlatform<T> doesn't currently support the "Windows" target platform, so we have this check here.
             if (Device.OS == TargetPlatform.Windows || Device.OS == TargetPlatform.WinPhone)
             {
                 syncButton.IsVisible = true;
             }
+        }
+
+        public static async Task<TodoList> CreateAsync()
+        {
+            TodoList result = new TodoList();
+            result.manager = await TodoItemManager.CreateAsync();
+
+            return result;
         }
 
         protected override async void OnAppearing()
