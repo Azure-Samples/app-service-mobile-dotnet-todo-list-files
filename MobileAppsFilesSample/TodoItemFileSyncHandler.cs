@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure.MobileServices.Sync;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace MobileAppsFilesSample
 {
@@ -36,6 +37,7 @@ namespace MobileAppsFilesSample
             }
             else // Create or update. We're aggressively downloading all files.
             {
+				Debug.WriteLine ("Downloading file: " + file.ParentId);
                 await this.todoItemManager.DownloadFileAsync(file);
             }
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using Xamarin.Forms;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+using System.Collections.ObjectModel;
 
 namespace MobileAppsFilesSample
 {
@@ -32,21 +33,20 @@ namespace MobileAppsFilesSample
             if (todoList.ItemsSource == null)
             {
                 await SyncItemsAsync(true);
-                await LoadItems();
+//				await LoadItems ();
             }
         }
 
         private async Task LoadItems()
         {
             IEnumerable<TodoItem> items = await manager.GetTodoItemsAsync();
-            var viewModels = new List<TodoItemViewModel>();
+			var viewModels = new ObservableCollection<TodoItemViewModel>();
+			todoList.ItemsSource = viewModels;
 
             foreach (var i in items) {
                 viewModels.Add(await TodoItemViewModel.CreateAsync(i, this.manager));
             }
-
-            todoList.ItemsSource = viewModels;
-        }
+		}
 
         // Data methods
         private async Task AddItem(TodoItem item)

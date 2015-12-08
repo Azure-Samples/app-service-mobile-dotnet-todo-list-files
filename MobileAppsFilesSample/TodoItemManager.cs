@@ -25,17 +25,15 @@ namespace MobileAppsFilesSample
 {
     public partial class TodoItemManager
     {
-        static TodoItemManager defaultInstance = new TodoItemManager();
         MobileServiceClient client;
 
         IMobileServiceSyncTable<TodoItem> todoTable;
-        IDisposable eventSubscription;
 
         public TodoItemManager()
         {
-            this.client = new MobileServiceClient(Constants.ApplicationURL, new LoggingHandler());
+			this.client = new MobileServiceClient(Constants.ApplicationURL, new LoggingHandler(true));
 
-            var store = new MobileServiceSQLiteStore("localstore.db");
+			var store = new MobileServiceSQLiteStore("localstore.db");
             store.DefineTable<TodoItem>();
 
             // FILES: Initialize file sync
@@ -46,12 +44,12 @@ namespace MobileAppsFilesSample
 
             this.todoTable = client.GetSyncTable<TodoItem>();
 
-            eventSubscription = this.client.EventManager.Subscribe<IMobileServiceEvent>(GeneralEventHandler);
+			this.client.EventManager.Subscribe<StoreOperationCompletedEvent>(GeneralEventHandler);
         }
 
-        private void GeneralEventHandler(IMobileServiceEvent mobileServiceEvent)
+		private void GeneralEventHandler(StoreOperationCompletedEvent mobileServiceEvent)
         {
-            Debug.WriteLine("Event handled: " + mobileServiceEvent.Name);
+			Debug.WriteLine("Event handled: " + mobileServiceEvent.Operation.RecordId);
         }
 
         public async Task SyncAsync()
@@ -88,28 +86,6 @@ namespace MobileAppsFilesSample
                     }
                 }
             }
-        }
-
-        public static TodoItemManager DefaultManager
-        {
-            get
-            {
-                return defaultInstance;
-            }
-            private set
-            {
-                defaultInstance = value;
-            }
-        }
-
-        public MobileServiceClient CurrentClient
-        {
-            get { return client; }
-        }
-
-        public bool IsOfflineEnabled
-        {
-            get { return todoTable is Microsoft.WindowsAzure.MobileServices.Sync.IMobileServiceSyncTable<TodoItem>; }
         }
 
         public async Task<IEnumerable<TodoItem>> GetTodoItemsAsync()
