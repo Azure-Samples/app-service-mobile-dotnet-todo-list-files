@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.WindowsAzure.MobileServices.Files;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
-    public class TodoItemImageViewModel : donnam_testforms.ViewModel
+    public class TodoItemImageViewModel : MobileAppsFilesSample.ViewModel
     {
         private string name;
         private string uri;

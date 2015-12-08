@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public class ViewModel : INotifyPropertyChanged
     {

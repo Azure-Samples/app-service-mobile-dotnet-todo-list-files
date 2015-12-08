@@ -5,7 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace donnam_testforms.iOS
+namespace MobileAppsFilesSample.iOS
 {
 	public class Application
 	{

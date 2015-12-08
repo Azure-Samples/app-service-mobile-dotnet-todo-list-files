@@ -26,7 +26,7 @@ namespace WinApp
         {
             this.InitializeComponent();
 
-            LoadApplication(new donnam_testforms.App());
+            LoadApplication(new MobileAppsFilesSample.App());
         }
     }
 }

@@ -8,7 +8,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 
-namespace donnam_testforms.Droid
+namespace MobileAppsFilesSample.Droid
 {
 	[Activity (Label = "donnam_testforms.Droid", 
 		Icon = "@drawable/icon", 

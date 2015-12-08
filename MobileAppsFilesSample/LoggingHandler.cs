@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public class LoggingHandler : DelegatingHandler
     {

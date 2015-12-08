@@ -6,9 +6,9 @@
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{5FA0219F-B063-4D07-800B-CC38BDB5B916}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>donnam_testforms.iOS</RootNamespace>
+    <RootNamespace>MobileAppsFilesSample.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>donnam_testformsiOS</AssemblyName>
+    <AssemblyName>MobileAppsFilesSampleiOS</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -190,9 +190,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\donnam_testforms\donnam_testforms.csproj">
+    <ProjectReference Include="..\MobileAppsFilesSample\MobileAppsFilesSample.csproj">
       <Project>{3AFA591D-C115-4AC9-9519-F788373ECDE9}</Project>
-      <Name>donnam_testforms</Name>
+      <Name>MobileAppsFilesSample</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

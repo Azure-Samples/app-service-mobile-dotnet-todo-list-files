@@ -8,7 +8,7 @@ using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public interface IPlatform
     {

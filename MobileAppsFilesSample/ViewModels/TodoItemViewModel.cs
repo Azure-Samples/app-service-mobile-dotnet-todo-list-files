@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Xamarin.Forms;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public class TodoItemViewModel : ViewModel
     {

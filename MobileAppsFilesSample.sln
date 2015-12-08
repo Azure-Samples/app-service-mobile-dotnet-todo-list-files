@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "donnam_testforms", "donnam_testforms\donnam_testforms.csproj", "{3AFA591D-C115-4AC9-9519-F788373ECDE9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileAppsFilesSample", "MobileAppsFilesSample\MobileAppsFilesSample.csproj", "{3AFA591D-C115-4AC9-9519-F788373ECDE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "donnam_testforms.iOS", "iOS\donnam_testforms.iOS.csproj", "{5FA0219F-B063-4D07-800B-CC38BDB5B916}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileAppsFilesSample.iOS", "iOS\MobileAppsFilesSample.iOS.csproj", "{5FA0219F-B063-4D07-800B-CC38BDB5B916}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "donnam_testforms.Droid", "Droid\donnam_testforms.Droid.csproj", "{34B9099E-4B00-4707-BFDE-0B95997F8893}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileAppsFilesSample.Droid", "Droid\MobileAppsFilesSample.Droid.csproj", "{34B9099E-4B00-4707-BFDE-0B95997F8893}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "donnam_testforms.WinApp", "WinApp\donnam_testforms.WinApp.csproj", "{059786BD-D4DA-4770-8624-13A84BFC97AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileAppsFilesSample.WinApp", "WinApp\MobileAppsFilesSample.WinApp.csproj", "{059786BD-D4DA-4770-8624-13A84BFC97AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "donnam_testforms.WinPhone81", "WinPhone81\donnam_testforms.WinPhone81.csproj", "{6B0A711C-8401-4240-BA08-A8198EFC271E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileAppsFilesSample.WinPhone81", "WinPhone81\MobileAppsFilesSample.WinPhone81.csproj", "{6B0A711C-8401-4240-BA08-A8198EFC271E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

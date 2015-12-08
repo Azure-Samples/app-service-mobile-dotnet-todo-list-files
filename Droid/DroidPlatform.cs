@@ -11,8 +11,8 @@ using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using Xamarin.Media;
 
-[assembly: Xamarin.Forms.Dependency(typeof(donnam_testforms.Droid.DroidPlatform))]
-namespace donnam_testforms.Droid
+[assembly: Xamarin.Forms.Dependency(typeof(MobileAppsFilesSample.Droid.DroidPlatform))]
+namespace MobileAppsFilesSample.Droid
 {
     public class DroidPlatform : IPlatform
     {

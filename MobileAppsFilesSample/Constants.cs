@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
 	public static class Constants
 	{

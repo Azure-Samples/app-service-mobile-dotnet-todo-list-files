@@ -9,8 +9,8 @@ using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using Xamarin.Media;
 
-[assembly: Xamarin.Forms.Dependency(typeof(donnam_testforms.iOS.TouchPlatform))]
-namespace donnam_testforms.iOS
+[assembly: Xamarin.Forms.Dependency(typeof(MobileAppsFilesSample.iOS.TouchPlatform))]
+namespace MobileAppsFilesSample.iOS
 {
     class TouchPlatform : IPlatform
     {

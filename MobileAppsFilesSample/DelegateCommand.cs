@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public class DelegateCommand : ICommand
     {

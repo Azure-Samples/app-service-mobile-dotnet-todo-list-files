@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
 	public class App : Application
 	{

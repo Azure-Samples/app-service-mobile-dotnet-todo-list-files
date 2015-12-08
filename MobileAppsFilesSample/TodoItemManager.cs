@@ -21,7 +21,7 @@ using System.IO;
 using Microsoft.WindowsAzure.MobileServices.Eventing;
 using Xamarin.Forms;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public partial class TodoItemManager
     {

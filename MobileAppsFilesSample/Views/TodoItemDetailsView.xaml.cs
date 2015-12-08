@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public partial class TodoItemDetailsView : ContentPage
     {

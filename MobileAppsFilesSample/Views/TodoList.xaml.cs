@@ -6,7 +6,7 @@ using Xamarin.Forms;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public partial class TodoList : ContentPage
     {

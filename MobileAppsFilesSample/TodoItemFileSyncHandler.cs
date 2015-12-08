@@ -10,7 +10,7 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Xamarin.Forms;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
     public class TodoItemFileSyncHandler : IFileSyncHandler
     {

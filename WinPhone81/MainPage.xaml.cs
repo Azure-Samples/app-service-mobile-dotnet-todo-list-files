@@ -28,7 +28,7 @@ namespace WinPhone81
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
-            LoadApplication(new donnam_testforms.App());
+            LoadApplication(new MobileAppsFilesSample.App());
         }
 
         /// <summary>

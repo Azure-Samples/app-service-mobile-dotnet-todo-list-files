@@ -2,7 +2,7 @@
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json;
 
-namespace donnam_testforms
+namespace MobileAppsFilesSample
 {
 	public class TodoItem
 	{
