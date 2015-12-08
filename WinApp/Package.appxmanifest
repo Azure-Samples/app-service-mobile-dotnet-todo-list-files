@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="WinApp.App">
-      <m2:VisualElements DisplayName="donnam_testforms" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Xamarin Azure Todo Windows Store App" ForegroundText="light" BackgroundColor="#464646">
+      <m2:VisualElements DisplayName="MobileAppsFilesSample" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Xamarin Azure Todo Windows Store App" ForegroundText="light" BackgroundColor="#464646">
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
     </Application>

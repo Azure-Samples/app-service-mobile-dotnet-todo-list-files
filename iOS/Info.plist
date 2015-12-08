@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>donnam_testforms</string>
+	<string>MobileAppsFilesSample</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.xamarin.sample.donnam_testforms</string>
+	<string>com.xamarin.sample.MobileAppsFilesSample</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>

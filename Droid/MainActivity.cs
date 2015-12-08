@@ -10,7 +10,7 @@ using Android.OS;
 
 namespace MobileAppsFilesSample.Droid
 {
-	[Activity (Label = "donnam_testforms.Droid", 
+	[Activity (Label = "MobileAppsFilesSample.Droid", 
 		Icon = "@drawable/icon", 
 		MainLauncher = true, 
 		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
