@@ -59,6 +59,8 @@ namespace MobileAppsFilesSample
             ReadOnlyCollection<MobileServiceTableOperationError> syncErrors = null;
 
             try {
+                await this.client.SyncContext.PushAsync();
+
                 // FILES: Push file changes
                 await this.todoTable.PushFileChangesAsync();
 

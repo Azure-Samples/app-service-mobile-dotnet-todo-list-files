@@ -82,14 +82,6 @@ namespace MobileAppsFilesSample
             }
         }
 
-        public string Notes
-        {
-            get
-            {
-                return this.todoItem.Notes;
-            }
-        }
-
         public ICollection<TodoItemImageViewModel> Images
         {
             get { return images; }
