@@ -42,7 +42,7 @@ namespace donnam_testforms
             this.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(this), store);
 
             //Initializes the SyncContext using the default IMobileServiceSyncHandler.
-            this.client.SyncContext.InitializeAsync(store);
+            this.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.AllNotifications);
 
             this.todoTable = client.GetSyncTable<TodoItem>();
 

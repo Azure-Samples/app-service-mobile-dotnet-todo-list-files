@@ -31,7 +31,7 @@ namespace donnam_testforms
 
             if (todoList.ItemsSource == null)
             {
-                //await SyncItemsAsync(true);
+                await SyncItemsAsync(true);
                 await LoadItems();
             }
         }

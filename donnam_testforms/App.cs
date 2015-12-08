@@ -7,7 +7,7 @@ namespace donnam_testforms
 		public App ()
 		{
 			// The root page of your application
-			MainPage = new TodoList();
+			MainPage = new NavigationPage(new TodoList());
 		}
 
         public static object UIContext { get; set; }

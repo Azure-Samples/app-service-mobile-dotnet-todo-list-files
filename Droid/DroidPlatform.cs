@@ -11,6 +11,7 @@ using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using Xamarin.Media;
 
+[assembly: Xamarin.Forms.Dependency(typeof(donnam_testforms.Droid.DroidPlatform))]
 namespace donnam_testforms.Droid
 {
     public class DroidPlatform : IPlatform
@@ -18,7 +19,7 @@ namespace donnam_testforms.Droid
         public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
         {
             var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
-            await table. DownloadFileAsync(file, path);
+            await table.DownloadFileAsync(file, path);
         }
 
         public async Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata)
@@ -27,12 +28,12 @@ namespace donnam_testforms.Droid
             return new PathMobileServiceFileDataSource(filePath);
         }
 
-        public async Task<string> GetPhotoAsync(object context)
+        public async Task<string> TakePhotoAsync(object context)
         {
             var uiContext = context as Context;
             if (uiContext != null) {
                 var mediaPicker = new MediaPicker(uiContext);
-                var photo = await mediaPicker.PickPhotoAsync();
+                var photo = await mediaPicker.TakePhotoAsync(new StoreCameraMediaOptions());
 
                 return photo.Path;
             }
@@ -42,7 +43,8 @@ namespace donnam_testforms.Droid
 
         public string GetTodoFilesPath()
         {
-            string filesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TodoItemFiles");
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string filesPath = Path.Combine(appData, "TodoItemFiles");
 
             if (!Directory.Exists(filesPath)) {
                 Directory.CreateDirectory(filesPath);

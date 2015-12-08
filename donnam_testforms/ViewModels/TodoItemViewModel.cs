@@ -99,7 +99,7 @@ namespace donnam_testforms
         private async void AddImage(object obj)
         {
             IPlatform mediaProvider = DependencyService.Get<IPlatform>();
-            string sourceImagePath = await mediaProvider.GetPhotoAsync(App.UIContext);
+            string sourceImagePath = await mediaProvider.TakePhotoAsync(App.UIContext);
 
             //var mediaPicker = new MediaPicker(App.UIContext);
             //var photo = await mediaPicker.TakePhotoAsync(new StoreCameraMediaOptions());

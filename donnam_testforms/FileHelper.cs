@@ -21,9 +21,10 @@ namespace donnam_testforms
             var sourceStream = await sourceFile.OpenAsync(FileAccess.Read);
 
             var targetFile = await localStorage.CreateFileAsync(targetPath, CreationCollisionOption.ReplaceExisting);
-            var targetStream = await targetFile.OpenAsync(FileAccess.ReadAndWrite);
 
-            await sourceStream.CopyToAsync(targetStream);
+            using (var targetStream = await targetFile.OpenAsync(FileAccess.ReadAndWrite)) {
+                await sourceStream.CopyToAsync(targetStream);
+            }
 
             return targetPath;
         }
@@ -32,9 +33,12 @@ namespace donnam_testforms
         {
             IPlatform platform = DependencyService.Get<IPlatform>();
 
-            string recordFilesPath = Path.Combine(platform.GetTodoFilesPath(), itemId); 
+            string recordFilesPath = Path.Combine(platform.GetTodoFilesPath(), itemId);
 
-            await FileSystem.Current.LocalStorage.CreateFolderAsync(recordFilesPath, CreationCollisionOption.ReplaceExisting);
+            var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
+            if (checkExists == ExistenceCheckResult.NotFound) {
+                await FileSystem.Current.LocalStorage.CreateFolderAsync(recordFilesPath, CreationCollisionOption.ReplaceExisting);
+            }
 
             return Path.Combine(recordFilesPath, fileName);
         }
@@ -42,9 +46,9 @@ namespace donnam_testforms
         public static async Task DeleteLocalFileAsync(Microsoft.WindowsAzure.MobileServices.Files.MobileServiceFile fileName)
         {
             string localPath = await GetLocalFilePathAsync(fileName.ParentId, fileName.Name);
-            var fileExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(localPath);
+            var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(localPath);
 
-            if (fileExists == ExistenceCheckResult.FileExists) {
+            if (checkExists == ExistenceCheckResult.FileExists) {
                 var file = await FileSystem.Current.LocalStorage.GetFileAsync(localPath);
                 await file.DeleteAsync();
             }

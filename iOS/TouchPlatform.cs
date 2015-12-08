@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using Xamarin.Media;
 
+[assembly: Xamarin.Forms.Dependency(typeof(donnam_testforms.iOS.TouchPlatform))]
 namespace donnam_testforms.iOS
 {
     class TouchPlatform : IPlatform
@@ -25,7 +26,7 @@ namespace donnam_testforms.iOS
             return new PathMobileServiceFileDataSource(filePath);
         }
 
-        public async Task<string> GetPhotoAsync(object context)
+        public async Task<string> TakePhotoAsync(object context)
         {
             var mediaPicker = new MediaPicker();
             var mediaFile = await mediaPicker.PickPhotoAsync();

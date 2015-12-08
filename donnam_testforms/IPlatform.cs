@@ -16,7 +16,7 @@ namespace donnam_testforms
 
         Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata);
 
-        Task<string> GetPhotoAsync(object context);
+        Task<string> TakePhotoAsync(object context);
 
         Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename);
     }
