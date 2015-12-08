@@ -28,9 +28,7 @@ namespace MobileAppsFilesSample
         public TodoItemManager()
         {
             client = new MobileServiceClient(
-                Constants.ApplicationURL,
-                Constants.GatewayURL,
-                Constants.ApplicationKey, new LoggingHandler(false));
+                Constants.ApplicationURL, new LoggingHandler(true));
 //                Constants.ApplicationKey, null);
 
            // var store = new TodoItemSQLiteStore("localstore.db", false, false, false);
@@ -41,7 +39,7 @@ namespace MobileAppsFilesSample
             this.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(this), store);
 
             //Initializes the SyncContext using the default IMobileServiceSyncHandler.
-            this.client.SyncContext.InitializeAsync(store);
+            this.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.AllNotifications);
 
             this.todoTable = client.GetSyncTable<TodoItem>();
 

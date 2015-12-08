@@ -80,29 +80,36 @@
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.0.9.1-preview\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Azure.Mobile.Server, Version=0.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.0.2.575\lib\net45\Microsoft.Azure.Mobile.Server.dll</HintPath>
+    <Reference Include="Microsoft.Azure.Mobile.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Azure.Mobile.Server.Authentication, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Authentication.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Authentication.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Azure.Mobile.Server.CrossDomain">
       <HintPath>..\packages\Microsoft.Azure.Mobile.Server.CrossDomain.0.2.575\lib\net45\Microsoft.Azure.Mobile.Server.CrossDomain.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Azure.Mobile.Server.Entity, Version=0.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Entity.0.2.575\lib\net45\Microsoft.Azure.Mobile.Server.Entity.dll</HintPath>
+    <Reference Include="Microsoft.Azure.Mobile.Server.Entity, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Entity.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Entity.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Azure.Mobile.Server.Home">
-      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Home.0.2.575\lib\net45\Microsoft.Azure.Mobile.Server.Home.dll</HintPath>
+    <Reference Include="Microsoft.Azure.Mobile.Server.Home, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Home.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Home.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Azure.Mobile.Server.Notifications">
-      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Notifications.0.2.575\lib\net45\Microsoft.Azure.Mobile.Server.Notifications.dll</HintPath>
+    <Reference Include="Microsoft.Azure.Mobile.Server.Notifications, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Notifications.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Notifications.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Azure.Mobile.Server.Quickstart">
-      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Quickstart.0.2.575\lib\net45\Microsoft.Azure.Mobile.Server.Quickstart.dll</HintPath>
+    <Reference Include="Microsoft.Azure.Mobile.Server.Quickstart, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Quickstart.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Quickstart.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Azure.Mobile.Server.Tables, Version=0.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Tables.0.2.575\lib\net45\Microsoft.Azure.Mobile.Server.Tables.dll</HintPath>
+    <Reference Include="Microsoft.Azure.Mobile.Server.Tables, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Server.Tables.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Tables.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Azure.NotificationHubs, Version=2.16.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -224,6 +231,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\donnam-testforms - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\todolist-files-msdn.pubxml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
