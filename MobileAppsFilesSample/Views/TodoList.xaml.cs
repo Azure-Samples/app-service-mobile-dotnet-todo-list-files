@@ -6,6 +6,7 @@ using Xamarin.Forms;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace MobileAppsFilesSample
 {
@@ -51,6 +52,7 @@ namespace MobileAppsFilesSample
 
             foreach (var i in items) {
                 viewModels.Add(await TodoItemViewModel.CreateAsync(i, this.manager));
+				Debug.WriteLine ("Created view model for: " + i.Name);
             }
 		}
 
@@ -82,6 +84,7 @@ namespace MobileAppsFilesSample
 
             if (todo != null)
             {
+				await todo.LoadImagesAsync(); // reload images as they download asynchronously
                 var detailsView = new TodoItemDetailsView();
                 detailsView.BindingContext = todo;
 

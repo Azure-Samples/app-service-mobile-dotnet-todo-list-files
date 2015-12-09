@@ -35,7 +35,7 @@ namespace MobileAppsFilesSample
             result.todoItem = todoItem;
             result.itemManager = itemManager;
 
-            await result.InitializeImagesAsync(todoItem);
+			await result.LoadImagesAsync();
             result.InitializeCommands();
 
             return result;
@@ -46,7 +46,7 @@ namespace MobileAppsFilesSample
             AddImageCommand = new DelegateCommand(AddImage);
         }
 
-        private async Task InitializeImagesAsync(TodoItem todoItem)
+        public async Task LoadImagesAsync()
         {
             IEnumerable<MobileServiceFile> files = await this.itemManager.GetImageFilesAsync(todoItem);
             this.Images = new ObservableCollection<TodoItemImageViewModel>();
