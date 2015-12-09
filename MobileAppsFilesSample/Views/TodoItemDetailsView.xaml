@@ -7,15 +7,12 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <Label Text="{Binding Notes}"
-           Grid.Row="0"/>
     <Button Command="{Binding AddImageCommand}" Text="Add image"></Button>
     <ListView x:Name="imagesList"
               ItemsSource="{Binding Images}"
-              IsPullToRefreshEnabled="true"
+              IsPullToRefreshEnabled="false"
               Grid.Row="2">
       <ListView.ItemTemplate>
         <DataTemplate>

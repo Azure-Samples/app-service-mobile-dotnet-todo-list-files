@@ -37,7 +37,6 @@ namespace MobileAppsFilesSample
             }
             else // Create or update. We're aggressively downloading all files.
             {
-				Debug.WriteLine ("Downloading file: " + file.ParentId);
                 await this.todoItemManager.DownloadFileAsync(file);
             }
         }

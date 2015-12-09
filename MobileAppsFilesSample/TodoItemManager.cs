@@ -133,6 +133,9 @@ namespace MobileAppsFilesSample
 
         internal async Task DownloadFileAsync(MobileServiceFile file)
         {
+            var todoItem = await todoTable.LookupAsync(file.ParentId);
+            Debug.WriteLine ("++ Downloading file: " + todoItem.Name);
+
             IPlatform platform = DependencyService.Get<IPlatform>();
 
             string filePath = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name); 
