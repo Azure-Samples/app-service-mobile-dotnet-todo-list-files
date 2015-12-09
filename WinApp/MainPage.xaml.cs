@@ -26,9 +26,7 @@ namespace WinApp
         {
             this.InitializeComponent();
 
-            LoadApplication(await MobileAppsFilesSample.App.InitAsync());
+            LoadApplication(new MobileAppsFilesSample.App());
         }
-
-        
     }
 }

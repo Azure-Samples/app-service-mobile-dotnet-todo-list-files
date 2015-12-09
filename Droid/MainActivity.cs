@@ -25,7 +25,7 @@ namespace MobileAppsFilesSample.Droid
 			Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
             App.UIContext = this;
 
-            LoadApplication (await App.InitAsync());
+            LoadApplication (new App());
 
 		}
 	}

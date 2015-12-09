@@ -14,7 +14,7 @@ namespace MobileAppsFilesSample
     {
         TodoItemManager manager;
 
-        private TodoList()
+        public TodoList()
         {
             InitializeComponent();
 
@@ -25,17 +25,11 @@ namespace MobileAppsFilesSample
             }
         }
 
-        public static async Task<TodoList> CreateAsync()
-        {
-            TodoList result = new TodoList();
-            result.manager = await TodoItemManager.CreateAsync();
-
-            return result;
-        }
-
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            this.manager = await TodoItemManager.CreateAsync();
 
             if (todoList.ItemsSource == null)
             {

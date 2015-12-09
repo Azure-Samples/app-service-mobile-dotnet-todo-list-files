@@ -5,16 +5,9 @@ namespace MobileAppsFilesSample
 {
     public class App : Application
     {
-        private App () { }
-
-        public static async Task<App> InitAsync()
-        {
-            var app = new App();
-
-            var todoListPage = await TodoList.CreateAsync();
-            app.MainPage = new NavigationPage(todoListPage);
-
-            return app;
+        public App()
+        {            
+            this.MainPage = new NavigationPage(new TodoList());
         }
 
         public static object UIContext { get; set; }

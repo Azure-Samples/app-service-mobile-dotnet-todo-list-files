@@ -22,7 +22,7 @@ namespace MobileAppsFilesSample.iOS
             // For more information, see: http://go.microsoft.com/fwlink/?LinkId=620342
             SQLitePCL.CurrentPlatform.Init();
 
-            LoadApplication(App.InitAsync().Result);
+            LoadApplication(new App());
 
             window = new UIWindow(UIScreen.MainScreen.Bounds);
 
