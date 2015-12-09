@@ -34,9 +34,9 @@ namespace MobileAppsFilesSample
         public static async Task<TodoItemManager> CreateAsync()
         {
             var result = new TodoItemManager();
-            result.client = new MobileServiceClient(Constants.ApplicationURL, new LoggingHandler(true));
+			result.client = new MobileServiceClient(Constants.ApplicationURL, new LoggingHandler(true));
 
-            var store = new MobileServiceSQLiteStore("localstore.db");
+            var store = new MobileServiceSQLiteStore("localstore2.db");
             store.DefineTable<TodoItem>();
 
             // FILES: Initialize file sync
@@ -62,7 +62,7 @@ namespace MobileAppsFilesSample
             ReadOnlyCollection<MobileServiceTableOperationError> syncErrors = null;
 
             try {
-                await this.client.SyncContext.PushAsync();
+//                await this.client.SyncContext.PushAsync();
 
                 // FILES: Push file changes
                 await this.todoTable.PushFileChangesAsync();
@@ -96,7 +96,7 @@ namespace MobileAppsFilesSample
         public async Task<IEnumerable<TodoItem>> GetTodoItemsAsync()
         {
             try {
-                return await todoTable.ReadAsync();
+                return await todoTable.OrderBy(item => item.Name).ToListAsync();
             }
             catch (MobileServiceInvalidOperationException msioe) {
                 Debug.WriteLine(@"INVALID {0}", msioe.Message);
