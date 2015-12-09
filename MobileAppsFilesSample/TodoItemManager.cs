@@ -1,9 +1,3 @@
-// To add offline sync support: add the NuGet package WindowsAzure.MobileServices.SQLiteStore
-// to all projects in the solution and uncomment the symbol definition OFFLINE_SYNC_ENABLED
-// For Xamarin.iOS, also edit AppDelegate.cs and uncomment the call to SQLitePCL.CurrentPlatform.Init()
-// For more information, see: http://go.microsoft.com/fwlink/?LinkId=620342 
-#define OFFLINE_SYNC_ENABLED
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,15 +28,15 @@ namespace MobileAppsFilesSample
         public static async Task<TodoItemManager> CreateAsync()
         {
             var result = new TodoItemManager();
-			result.client = new MobileServiceClient(Constants.ApplicationURL, new LoggingHandler(true));
+			result.client = new MobileServiceClient(Constants.ApplicationURL);
 
             var store = new MobileServiceSQLiteStore("localstore2.db");
             store.DefineTable<TodoItem>();
 
-            // FILES: Initialize file sync
+            // Initialize file sync
             result.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(result), store);
 
-            //Initializes the SyncContext using the default IMobileServiceSyncHandler.
+            // Initialize the SyncContext using the default IMobileServiceSyncHandler
             await result.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.AllNotifications);
 
             result.todoTable = result.client.GetSyncTable<TodoItem>();
