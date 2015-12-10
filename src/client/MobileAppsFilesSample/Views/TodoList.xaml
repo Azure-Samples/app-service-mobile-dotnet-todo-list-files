@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage 	xmlns="http://xamarin.com/schemas/2014/forms" 
-				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-				x:Class="MobileAppsFilesSample.TodoList"
-				Title="Azure Todo">
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+        x:Class="MobileAppsFilesSample.TodoList"
+        Title="Azure Todo">
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <ActivityIndicator Grid.RowSpan="2"
                        IsVisible="False"
@@ -19,11 +20,13 @@
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Entry x:Name="newItemName"
-                  Placeholder="Item name" />
+                  Placeholder="Item name"
+                  Text="{Binding NewItemText, Mode=TwoWay}" />
         <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
           <Button Text="+"
                   MinimumHeightRequest="30"
-                  Clicked="OnAdd" />
+                  Command="{Binding AddItemCommand}"
+                  CommandParameter="{Binding .}" />
           <Button Text="Sync items"
                   x:Name="syncButton"
                   IsVisible="False"
@@ -35,18 +38,25 @@
       </Grid>
     </StackLayout>
     <ListView x:Name="todoList"
-				ItemSelected="OnSelected"
-				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
-				Grid.Row="1">
+        ItemSelected="OnSelected"
+        IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
+        ItemsSource="{Binding TodoItems}"
+        Grid.Row="1">
       <ListView.ItemTemplate>
         <DataTemplate>
           <TextCell Text="{Binding Name}">
             <TextCell.ContextActions>
-              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" CommandParameter="{Binding .}"/>
+              <MenuItem Command="{Binding Path=BindingContext.DeleteItemCommand, Source={x:Reference todoList} }" Text="Delete" IsDestructive="True" CommandParameter="{Binding .}"/>
             </TextCell.ContextActions>
           </TextCell>
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
+
+    <ContentView Grid.Row="2" BackgroundColor="Gray" Padding="5,2,2,2" IsVisible="{Binding IsStatusBarVisible}">
+      <Label x:Name="statusLabel" BackgroundColor="Gray" TextColor="White" 
+        Text="{Binding PendingChanges, StringFormat ='Pending Changes: {0}'}">
+      </Label>
+    </ContentView>
   </Grid>
 </ContentPage>

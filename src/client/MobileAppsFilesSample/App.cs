@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using MobileAppsFilesSample.ViewModels;
 using Xamarin.Forms;
 
 namespace MobileAppsFilesSample
@@ -7,7 +8,7 @@ namespace MobileAppsFilesSample
     {
         public App()
         {            
-            this.MainPage = new NavigationPage(new TodoList());
+            this.MainPage = new NavigationPage(new TodoList(new TodoListViewModel()));
         }
 
         public static object UIContext { get; set; }

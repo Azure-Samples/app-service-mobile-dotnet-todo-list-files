@@ -7,15 +7,24 @@ using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using MobileAppsFilesSample.ViewModels;
 
 namespace MobileAppsFilesSample
 {
     public partial class TodoList : ContentPage
     {
-        TodoItemManager manager;
-
-        public TodoList()
+        TodoListViewModel ViewModel
         {
+            get
+            {
+                return this.BindingContext as TodoListViewModel;
+            }
+        }
+
+        public TodoList(TodoListViewModel viewModel)
+        {
+            this.BindingContext = viewModel;
+
             InitializeComponent();
 
             // OnPlatform<T> doesn't currently support the "Windows" target platform, so we have this check here.
@@ -25,109 +34,31 @@ namespace MobileAppsFilesSample
             }
         }
 
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-
-            this.manager = await TodoItemManager.CreateAsync();
-
-            if (todoList.ItemsSource == null)
-            {
-                await SyncItemsAsync(true);
-//				await LoadItems ();
-            }
-        }
-
-        private async Task LoadItems()
-        {
-            IEnumerable<TodoItem> items = await manager.GetTodoItemsAsync();
-			var viewModels = new ObservableCollection<TodoItemViewModel>();
-			todoList.ItemsSource = viewModels;
-
-            foreach (var i in items) {
-                viewModels.Add(await TodoItemViewModel.CreateAsync(i, this.manager));
-				Debug.WriteLine ("Created view model for: " + i.Name);
-            }
-		}
-
-        // Data methods
-        private async Task AddItem(TodoItem item)
-        {
-            await manager.SaveTaskAsync(item);
-            await LoadItems();
-        }
-
-        async Task DeleteItem(TodoItem item)
-        {
-            await manager.DeleteTaskAsync(item);
-            await LoadItems();
-        }
-
-        public async void OnAdd(object sender, EventArgs e)
-        {
-            var todo = new TodoItem { Name = newItemName.Text };
-            await AddItem(todo);
-            newItemName.Text = "";
-            newItemName.Unfocus();
-        }
-
         // Event handlers
         public async void OnSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var todo = e.SelectedItem as TodoItemViewModel;
 
-            if (todo != null)
-            {
-				await todo.LoadImagesAsync(); // reload images as they download asynchronously
-                var detailsView = new TodoItemDetailsView();
-                detailsView.BindingContext = todo;
-
-                await Navigation.PushAsync(detailsView);
+            if (todo != null) {
+                await ViewModel.NavigateToDetailsView(todo, Navigation);
             }
 
-            //if (Device.OS != TargetPlatform.iOS && todo != null)
-            //{
-            //    // Not iOS - the swipe-to-delete is discoverable there
-            //    if (Device.OS == TargetPlatform.Android)
-            //    {
-            //        await DisplayAlert(todo.Name, "Press-and-hold to delete task " + todo.Name, "Got it!");
-            //    }
-            //    else
-            //    {
-            //        // Windows, not all platforms support the Context Actions yet
-            //        if (await DisplayAlert("Delete?", "Do you wish to delete " + todo.Name + "?", "Delete", "Cancel"))
-            //        {
-            //            await DeleteItem(todo);
-            //        }
-            //    }
-            //}
-            // prevents background getting highlighted
             todoList.SelectedItem = null;
         }
 
-        // http://developer.xamarin.com/guides/cross-platform/xamarin-forms/working-with/listview/#context
-        public async void OnDelete(object sender, EventArgs e)
-        {
-            var mi = ((MenuItem)sender);
-            var todoViewModel = mi.CommandParameter as TodoItemViewModel;
-            await DeleteItem(todoViewModel.GetItem());
-        }
-
-        // http://developer.xamarin.com/guides/cross-platform/xamarin-forms/working-with/listview/#pulltorefresh
         public async void OnRefresh(object sender, EventArgs e)
         {
             var list = (ListView)sender;
+
             var success = false;
-            try
-            {
-                await SyncItemsAsync(false);
+
+            try {
+                await ViewModel.SyncItemsAsync();
                 success = true;
             }
-            catch (Exception)
-            {
-                // requires C# 6
-                //await DisplayAlert ("Refresh Error", "Couldn't refresh data ("+ex.Message+")", "OK");
+            catch (Exception) {
             }
+
             list.EndRefresh();
             if (!success)
                 await DisplayAlert("Refresh Error", "Couldn't refresh data", "OK");
@@ -135,15 +66,8 @@ namespace MobileAppsFilesSample
 
         public async void OnSyncItems(object sender, EventArgs e)
         {
-            await SyncItemsAsync(true);
-        }
-
-        private async Task SyncItemsAsync(bool showActivityIndicator)
-        {
-            using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
-            {
-                await manager.SyncAsync();
-                await LoadItems();
+            using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
+                await ViewModel.SyncItemsAsync();
             }
         }
 

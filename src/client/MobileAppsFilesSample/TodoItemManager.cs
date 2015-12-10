@@ -28,27 +28,29 @@ namespace MobileAppsFilesSample
         public static async Task<TodoItemManager> CreateAsync()
         {
             var result = new TodoItemManager();
-			result.client = new MobileServiceClient(Constants.ApplicationURL);
+            result.client = new MobileServiceClient(Constants.ApplicationURL);
 
-            var store = new MobileServiceSQLiteStore("localstore2.db");
+            var store = new MobileServiceSQLiteStore("localstore.db");
             store.DefineTable<TodoItem>();
 
             // Initialize file sync
             result.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(result), store);
 
             // Initialize the SyncContext using the default IMobileServiceSyncHandler
-            await result.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.AllNotifications);
+            await result.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.NotifyLocalAndServerOperations);
 
             result.todoTable = result.client.GetSyncTable<TodoItem>();
 
-            result.client.EventManager.Subscribe<StoreOperationCompletedEvent>(result.GeneralEventHandler);
 
             return result;
         }
 
-        private void GeneralEventHandler(StoreOperationCompletedEvent mobileServiceEvent)
+        public IMobileServiceClient MobileServiceClient
         {
-            Debug.WriteLine("Event handled: " + mobileServiceEvent.Operation.RecordId);
+            get
+            {
+                return this.client;
+            }
         }
 
         public async Task SyncAsync()
