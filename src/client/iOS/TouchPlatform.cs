@@ -28,12 +28,17 @@ namespace MobileAppsFilesSample.iOS
 
         public async Task<string> TakePhotoAsync(object context)
         {
-            var mediaPicker = new MediaPicker();
-            var mediaFile = await mediaPicker.PickPhotoAsync();
-            return mediaFile.Path;
+            try {
+                var mediaPicker = new MediaPicker();
+                var mediaFile = await mediaPicker.PickPhotoAsync();
+                return mediaFile.Path;
+            }
+            catch (TaskCanceledException) {
+                return null;
+            }
         }
 
-        public string GetTodoFilesPath()
+        public Task<string> GetTodoFilesPathAsync()
         {
             string filesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TodoItemFiles");
 
@@ -41,7 +46,7 @@ namespace MobileAppsFilesSample.iOS
                 Directory.CreateDirectory(filesPath);
             }
 
-            return filesPath;
+            return Task.FromResult(filesPath);
         }
     }
 }

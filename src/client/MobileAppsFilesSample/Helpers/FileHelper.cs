@@ -33,7 +33,7 @@ namespace MobileAppsFilesSample
         {
             IPlatform platform = DependencyService.Get<IPlatform>();
 
-            string recordFilesPath = Path.Combine(platform.GetTodoFilesPath(), itemId);
+            string recordFilesPath = Path.Combine(await platform.GetTodoFilesPathAsync(), itemId);
 
             var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
             if (checkExists == ExistenceCheckResult.NotFound) {

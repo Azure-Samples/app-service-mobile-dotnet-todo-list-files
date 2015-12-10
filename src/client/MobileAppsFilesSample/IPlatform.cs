@@ -12,7 +12,7 @@ namespace MobileAppsFilesSample
 {
     public interface IPlatform
     {
-        string GetTodoFilesPath();
+        Task <string> GetTodoFilesPathAsync();
 
         Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata);
 

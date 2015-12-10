@@ -30,18 +30,22 @@ namespace MobileAppsFilesSample.Droid
 
         public async Task<string> TakePhotoAsync(object context)
         {
-            var uiContext = context as Context;
-            if (uiContext != null) {
-                var mediaPicker = new MediaPicker(uiContext);
-                var photo = await mediaPicker.TakePhotoAsync(new StoreCameraMediaOptions());
+            try {
+                var uiContext = context as Context;
+                if (uiContext != null) {
+                    var mediaPicker = new MediaPicker(uiContext);
+                    var photo = await mediaPicker.TakePhotoAsync(new StoreCameraMediaOptions());
 
-                return photo.Path;
+                    return photo.Path;
+                }
+            }
+            catch (TaskCanceledException) {
             }
 
             return null;
         }
 
-        public string GetTodoFilesPath()
+        public Task<string> GetTodoFilesPathAsync()
         {
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string filesPath = Path.Combine(appData, "TodoItemFiles");
@@ -50,7 +54,7 @@ namespace MobileAppsFilesSample.Droid
                 Directory.CreateDirectory(filesPath);
             }
 
-            return filesPath;
+            return Task.FromResult(filesPath);
         }
     }
 }
