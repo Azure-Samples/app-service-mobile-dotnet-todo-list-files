@@ -146,7 +146,8 @@ namespace MobileAppsFilesSample
             MobileServiceFile file = await this.todoTable.AddFileAsync(todoItem, Path.GetFileName(targetPath));
 
             // "Touch" the record to mark it as updated
-            await this.todoTable.UpdateAsync(todoItem);
+            // no longer required as of beta2
+            //await this.todoTable.UpdateAsync(todoItem);
 
             return file;
         }
