@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
@@ -18,33 +14,30 @@ namespace WinApp
 {
     public class WindowsStorePlatform : IPlatform
     {
-        public Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
+        public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
         {
-            //var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
-            //await table.DownloadFileAsync(file, path);
-            throw new NotImplementedException();
+            var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+            await table.DownloadFileAsync(file, path);
         }
 
-        public Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata)
+        public async Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata)
         {
-            //var filePath = await FileHelper.GetLocalFilePathAsync(metadata.ParentDataItemId, metadata.FileName);
-            //return new PathMobileServiceFileDataSource(filePath);
-            throw new NotImplementedException();
+            var filePath = await FileHelper.GetLocalFilePathAsync(metadata.ParentDataItemId, metadata.FileName);
+            return new PathMobileServiceFileDataSource(filePath);
         }
 
         public async Task<string> GetTodoFilesPathAsync()
         {
-            var root = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
+            var storageFolder = ApplicationData.Current.LocalFolder;
             var filePath = "TodoItemFiles";
 
-            var storageFolder = await StorageFolder.GetFolderFromPathAsync(root);
             var result = await storageFolder.TryGetItemAsync(filePath);
 
             if (result == null) {
                 result = await storageFolder.CreateFolderAsync(filePath);
             }
 
-            return result.Path;
+            return result.Name; // later operations will use relative paths
         }
 
         public async Task<string> TakePhotoAsync(object context)
