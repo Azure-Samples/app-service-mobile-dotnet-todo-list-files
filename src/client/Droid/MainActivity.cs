@@ -1,11 +1,5 @@
-﻿using System;
-
-using Android.App;
-using Android.Content;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 
 namespace MobileAppsFilesSample.Droid
@@ -26,7 +20,6 @@ namespace MobileAppsFilesSample.Droid
             App.UIContext = this;
 
             LoadApplication (new App());
-
         }
     }
 }
