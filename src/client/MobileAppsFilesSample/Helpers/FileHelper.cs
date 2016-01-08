@@ -35,10 +35,10 @@ namespace MobileAppsFilesSample
 
             string recordFilesPath = Path.Combine(await platform.GetTodoFilesPathAsync(), itemId);
 
-            var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
-            if (checkExists == ExistenceCheckResult.NotFound) {
-                await FileSystem.Current.LocalStorage.CreateFolderAsync(recordFilesPath, CreationCollisionOption.ReplaceExisting);
-            }
+                var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
+                if (checkExists == ExistenceCheckResult.NotFound) {
+                    await FileSystem.Current.LocalStorage.CreateFolderAsync(recordFilesPath, CreationCollisionOption.ReplaceExisting);
+                }
 
             return Path.Combine(recordFilesPath, fileName);
         }
