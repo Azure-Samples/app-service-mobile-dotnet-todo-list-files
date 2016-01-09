@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Microsoft.WindowsAzure.Mobile.Service.Files;
-using Microsoft.WindowsAzure.MobileServices.Files;
-using Microsoft.WindowsAzure.MobileServices.Files.Controllers;
+using Microsoft.Azure.Mobile.Server.Files;
+using Microsoft.Azure.Mobile.Server.Files.Controllers;
 using MobileAppsFileSampleService.DataObjects;
 
-namespace fcxfquickstartService.Controllers
+namespace MobileAppsFileSampleService.Controllers
 {
     public class TodoItemStorageController : StorageController<TodoItem>
     {
-        public TodoItemStorageController()
-        {
-
-        }
-
         [HttpPost]
         [Route("tables/TodoItem/{id}/StorageToken")]
         public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest value)
