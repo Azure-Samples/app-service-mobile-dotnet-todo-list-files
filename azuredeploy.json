@@ -98,13 +98,13 @@
             ]
         },
         {
-          "type": "Microsoft.Storage/storageAccounts",
-          "name": "[variables('storageAccountName')]",
-          "apiVersion": "2015-06-15",
-          "location": "[resourceGroup().location]",
-          "properties": {
-            "accountType": "Standard_LRS"
-          }
+            "name": "[variables('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "Standard_LRS"
+            }
         },        
         {
             "apiVersion": "2015-08-01",
@@ -155,8 +155,8 @@
                             "type": "SQLServer"
                         },
                         "MS_AzureStorageAccountConnectionString": {
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', [listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).key1])]",
-                            "type": "Other"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1)]",
+                            "type": "Custom"
                         }
                     }
                 },
