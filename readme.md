@@ -1,11 +1,30 @@
-#File Management for Mobile Apps - preview client and server SDK 
+#Azure Mobile Apps - structured data sync with files
 
-Prerequisites:
-- Xamarin account 
-- Visual Studio 2013 (or higher) for publishing server packages
-- Android or iOS emulator
-- A provisioned Azure Mobile App
-- An Azure Storage acount (either classic or new)
+## Deploy
+
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
+
+## Overview
+
+The Azure Mobile Apps client and server SDK support offline sync of structured data with CRUD operations against the /tables endpoint. Generally this data is stored in a database or similar store, and generally these data stores cannot store large binary data efficiently. Also, some applications have related data that is stored elsewhere (e.g., blob storage, SharePoint), and it is useful to be able to create associations between records in the /tables endpoint and other data.
+
+The file management feature of the Azure Mobile Apps SDK removes these limitations, and supports the following:
+
+- Secure client and server model, using SAS tokens (shared access signature) for client access to blob storage:
+    - Turnkey methods for requesting and retrieving SAS tokens with particular permissions (e.g., upload, download)
+    - Flexibility over SAS expiration policy
+- Scalable and efficient communication. Client performs upload and download operations directly against blob storage, so the mobile backend does not create a bottleneck
+
+- Flexible association of files and records. Files can be associated based on container name, blob name, or any other naming convention, by supplying a custom `IContainerNameResolver`. Association can be 1:1, 1:many, etc.
+
+- Client-side support for association of files and records. Files are simply data that is related to a record, and do not need to be managed separately by the developer.
+
+- Flexible client-side file management. The client SDK uses file paths only, and does not place any requirements on how the files are stored on the device. 
+
+- Flexibility over how clients download files. The client SDK has callbacks to notify of added or removed files, and the app developer can decide whether to download files immediately and store them, or download later based on user action.
+
+- Offline sync support for file upload and download. A client app can queue upload and download operations for when there is network connectivity.
+
 
 ##Azure Mobile Server SDK for Files
 In order to support the file management capabilities exposed by the client SDK, the following changes were made to the service:
@@ -50,12 +69,12 @@ When working in offline mode, file management operations are saved locally, unti
 The diagram below shows the sequence of operations for a file creation:
 
 ```sequence
-Application code->Azure Mobile Services SDK: Create file X
-Azure Mobile Services SDK->Azure Mobile Services SDK: Queue create file X operation
-Application code->Azure Mobile Services SDK: Push file changes
-Azure Mobile Services SDK->Application code: Get file X data
-Application code->Azure Mobile Services SDK: File X data
-Azure Mobile Services SDK->Storage: Upload file
+Application code->Azure Mobile Apps SDK: Create file X
+Azure Mobile Apps SDK->Azure Mobile Apps SDK: Queue create file X operation
+Application code->Azure Mobile Apps SDK: Push file changes
+Azure Mobile Apps SDK->Application code: Get file X data
+Application code->Azure Mobile Apps SDK: File X data
+Azure Mobile Apps SDK->Azure Storage: Upload file
 ```
 
 It's important to understand that the Azure Mobile Services Client SDK will not store the file data. The client SDK will invoke your code when it needs File contents will be requested. The application (your code) decides how (and if) files are stored on the local device.
@@ -65,40 +84,33 @@ The Azure Mobile Services SDK interacts with the application code as part of the
 
 IFileSyncHandler is a simple interface with the following definition:
 
-```c#
- public interface IFileSyncHandler
-    {
-        Task<IMobileServiceFileDataSource> GetDataSource(MobileServiceFileMetadata metadata);
+     public interface IFileSyncHandler
+        {
+            Task<IMobileServiceFileDataSource> GetDataSource(MobileServiceFileMetadata metadata);
 
-        Task ProcessFileSynchronizationAction(MobileServiceFile file, FileSynchronizationAction action);
-    }
-```
+            Task ProcessFileSynchronizationAction(MobileServiceFile file, FileSynchronizationAction action);
+        }
+
 ```GetDataSource``` is called when the Azure Mobile Services Client SDK needs the file data (e.g.: as part of the upload process). This gives you the ability manage how (and if) files are stored on the local device and return that information when needed.
 
 ```ProcessFileSynchronizationAction``` is invoked as part of the file synchronization flow. A file reference and a FileSynchronizationAction enumeration value are provided so you can decide how your application should handle that event (e.g. automatically downloading a file when it is created or updated, deleting a file from the local device when that file is deleted on the server).
 
 When initializing the file synchronization runtime, your application must supply a concrete implementation of the ```IFileSyncHandler```, as shown below:
 
-```c#
-MobileServiceClient client = new MobileServiceClient("app_url", "gateway_url", "application_key");
+    MobileServiceClient client = new MobileServiceClient("app_url", "gateway_url", "application_key");
 
-// . . . Other initialization code (local store, sync context, etc.)
-client.InitializeFileSync(new MyFileSyncHandler(), store);
-```
+    // . . . Other initialization code (local store, sync context, etc.)
+    client.InitializeFileSync(new MyFileSyncHandler(), store);
 
 > The ```IFileSyncHandler``` implementation in the *To do list* application is defined in the ```TodoItemFileSyncHandler.cs``` file.
 
 ####Creating and uploading a file
 The most common way of working with the file management API is through a set of extension methods on the ```IMobileServiceTable<T>``` interface, so in order to use the API, you must have a reference to the table you're working with.
 
-```c#
-MobileServiceFile file = await myTable.AddFileAsync(myItem, "file_name");
-``` 
+    using Microsoft.WindowsAzure.MobileServices.Files;
+    ...
 
-The following using statement is also required:
-```c#
-using Microsoft.WindowsAzure.MobileServices.Files;
-```
+    MobileServiceFile file = await myTable.AddFileAsync(myItem, "file_name");
 
 In the offline scenario, the upload will occur when the application initiates a synchronization, when that happens, the runtime will begin processing the operations queue and, once it finds this operation, it will invoke the ```GetDataSource``` method on the ```IFileSynchHandler``` instance provided by the application in order to retrieve the file contents for the upload.
 
@@ -108,23 +120,18 @@ In the offline scenario, the upload will occur when the application initiates a 
 ####Deleting a file
 To delete a file, you can follow the same pattern described above and use the ```DeleteFileAsync``` method on the ```IMobileServiceTable<T>``` instance:
 
-```c#
-await myTable.DeleteFileAsync(file);
-``` 
+    using Microsoft.WindowsAzure.MobileServices.Files;
+    ...
 
-As with the create file example, the following using statement is also required:
-```c#
-using Microsoft.WindowsAzure.MobileServices.Files;
-```
+    await myTable.DeleteFileAsync(file);
 
 In the offline scenario, the file deletion will occur when the application initiates a synchronization.
 
 ####Retrieve an item's files
 As mentioned in the *Azure Mobile Services File Management* section, files are managed through its associated record. In order to retrieve an item's files, you can call the ```GetFilesAsync``` method on the  ```IMobileServiceTable<T>``` instance. 
 
-```c#
-IEnumerable<MobileServiceFile> files = await myTable.GetFilesAsync(myItem);
-``` 
+    IEnumerable<MobileServiceFile> files = await myTable.GetFilesAsync(myItem);
+
 This method returns a list of files associated with the data item provided. It's important to remember that this is a ***local*** operation and will return the files based on the state of the object when it was last synchronized.
 
 To get an updated list of files from the server, you can initiate a sync operation as described in the *synchronizing file changes* section.
