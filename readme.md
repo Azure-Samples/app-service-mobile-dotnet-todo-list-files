@@ -571,7 +571,7 @@ For more information, see the tutorial [Enable offline sync for your Windows app
 
 2. Edit **Package.appxmanifest** and check the **Webcam** capability.
 
-3. Add a new class `WindowsStorePlatform` with the following implementation:
+3. Add a new class `WindowsStorePlatform` with the following implementation. Replace "YourNamespace" with the main namespace of your project.
 
         using System;
         using System.Threading.Tasks;
@@ -579,10 +579,10 @@ For more information, see the tutorial [Enable offline sync for your Windows app
         using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
         using Microsoft.WindowsAzure.MobileServices.Files.Sync;
         using Microsoft.WindowsAzure.MobileServices.Sync;
-        using MobileAppsFilesSample;
         using Windows.Foundation;
         using Windows.Media.Capture;
         using Windows.Storage;
+        using YourNamespace;
 
         [assembly: Xamarin.Forms.Dependency(typeof(WinApp.WindowsStorePlatform))]
         namespace WinApp
