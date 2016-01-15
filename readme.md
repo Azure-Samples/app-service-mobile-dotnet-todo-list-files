@@ -111,6 +111,30 @@ Right-click the solution and select **Manage NuGet packages for solution**. Add 
 
   - [PCLStorage](https://www.nuget.org/packages/PCLStorage/)
 
+
+###Add IPlatform interface
+
+Create a new interface `IPlatform` in the main portable library project.
+
+1. Add the following using statements:
+
+        using Microsoft.WindowsAzure.MobileServices.Files;
+        using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
+        using Microsoft.WindowsAzure.MobileServices.Sync;
+
+2. Replace the implementation with the following:
+
+        public interface IPlatform
+        {
+            Task <string> GetTodoFilesPathAsync();
+
+            Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata);
+
+            Task<string> TakePhotoAsync(object context);
+
+            Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename);
+        }
+
 ###Add FileHelper class
 
 1. Create a new class `FileHelper` in the main portable library project. Add the following using statements:
@@ -167,6 +191,7 @@ Right-click the solution and select **Manage NuGet packages for solution**. Add 
                     await file.DeleteAsync();
                 }
             }
+        }
 
 ### Add a file sync handler
 
@@ -208,21 +233,6 @@ Create a new class `TodoItemFileSyncHandler` in the main portable library projec
             }
         }
 
-###Add IPlatform interface
-
-Create a new interface `IPlatform` in the main portable library project:
-
-    public interface IPlatform
-    {
-        Task <string> GetTodoFilesPathAsync();
-
-        Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata);
-
-        Task<string> TakePhotoAsync(object context);
-
-        Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename);
-    }
-
 ###Update TodoItemManager
 
 1. In **TodoItemManager.cs**, uncomment the line `#define OFFLINE_SYNC_ENABLED`.
@@ -242,7 +252,7 @@ Create a new interface `IPlatform` in the main portable library project:
 
 4. In the constructor, replace the call to `InitializeAsync` with the following:
 
-        client.SyncContext.InitializeAsync(store, StoreTrackingOptions.NotifyLocalAndServerOperations);
+        this.client.SyncContext.InitializeAsync(store, StoreTrackingOptions.NotifyLocalAndServerOperations);
 
 5. In `SyncAsync()`, add the following after the call to `PushAsync()`:
 
@@ -261,7 +271,7 @@ Create a new interface `IPlatform` in the main portable library project:
 
         internal async Task<MobileServiceFile> AddImage(TodoItem todoItem, string imagePath)
         {
-            string targetPath = await FileHelper.CopyTodoItemFileAsync(todoItem.ID, imagePath);
+            string targetPath = await FileHelper.CopyTodoItemFileAsync(todoItem.Id, imagePath);
             return await this.todoTable.AddFileAsync(todoItem, Path.GetFileName(targetPath));
         }
 
@@ -326,35 +336,41 @@ Create a new interface `IPlatform` in the main portable library project:
     
         MainPage = new NavigationPage(new TodoList());
 
-3. Right-click the portable library project and select **Add** -> **New Item** -> **Cross-platform** -> **Forms Xaml Page**. Name the view `TodoItemDetailsView`.
+3. In **App.cs**, add the following property:
 
-4. Open **TodoItemDetailsView.xaml** and replace the body of the ContentPage with the following:
+        public static object UIContext { get; set; }
 
-        <Grid>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <Button Command="{Binding AddImageCommand}" Text="Add image"></Button>
-          <ListView x:Name="imagesList"
-                    ItemsSource="{Binding Images}"
-                    IsPullToRefreshEnabled="false"
-                    Grid.Row="2">
-            <ListView.ItemTemplate>
-              <DataTemplate>
-                <ImageCell ImageSource="{Binding Uri}"
-                            Text="{Binding Name}">
-                  <ImageCell.ContextActions >
-                    <MenuItem Text="Delete" Command="{Binding DeleteCommand}" IsDestructive="True" CommandParameter="{Binding .}"/>
-                  </ImageCell.ContextActions>
-                </ImageCell>
-              </DataTemplate>
-            </ListView.ItemTemplate>
-          </ListView>
-        </Grid>
+4. Right-click the portable library project and select **Add** -> **New Item** -> **Cross-platform** -> **Forms Xaml Page**. Name the view `TodoItemDetailsView`.
 
-5. Edit **TodoItemDetailsView.xaml.cs** and replace the implementation with the following:
+5. Open **TodoItemDetailsView.xaml** and replace the body of the ContentPage with the following:
+
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Clicked="OnAdd" Text="Add image"></Button>
+            <ListView x:Name="imagesList"
+                      ItemsSource="{Binding Images}"
+                      IsPullToRefreshEnabled="false"
+                      Grid.Row="2">
+              <ListView.ItemTemplate>
+                <DataTemplate>
+                  <ImageCell ImageSource="{Binding Uri}"
+                             Text="{Binding Name}">
+                  </ImageCell>
+                </DataTemplate>
+              </ListView.ItemTemplate>
+            </ListView>
+          </Grid>
+
+6. Edit **TodoItemDetailsView.xaml.cs** and add the following using statements:
+
+        using System.Collections.ObjectModel;
+        using Microsoft.WindowsAzure.MobileServices.Files;
+
+7. Replace the implementation of `TodoItemDetailsView` with the following:
 
         public partial class TodoItemDetailsView : ContentPage
         {
