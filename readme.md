@@ -1,3 +1,9 @@
+---
+services: app-service\mobile, app-service\web
+platforms: dotnet, xamarin
+author: lindydonna
+---
+
 #Azure Mobile Apps - structured data sync with files
 
 ## Deploy
