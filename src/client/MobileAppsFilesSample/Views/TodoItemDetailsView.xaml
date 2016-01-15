@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="{Binding Name}"
+             x:Class="MobileAppsFilesSample.TodoItemDetailsView">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Button Command="{Binding AddImageCommand}" Text="Add image"></Button>
+    <ListView x:Name="imagesList"
+              ItemsSource="{Binding Images}"
+              IsPullToRefreshEnabled="false"
+              Grid.Row="2">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ImageCell ImageSource="{Binding Uri}"
+                     Text="{Binding Name}">
+            <ImageCell.ContextActions >
+              <MenuItem Text="Delete" Command="{Binding DeleteCommand}" IsDestructive="True" CommandParameter="{Binding .}"/>
+            </ImageCell.ContextActions>
+          </ImageCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+  </Grid>
+</ContentPage>
