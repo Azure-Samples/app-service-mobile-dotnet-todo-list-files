@@ -1,0 +1,21 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "administratorLogin": {
+            "value": "NewAdmin"
+        },
+        "databaseName": {
+            "value": "todolist-sqldb"
+        },
+        "hostingPlanName": {
+            "value": "todolist-plan"
+        },
+        "administratorLoginPassword": {
+            "value": "Not$ecurePassw0rd"
+        },
+        "appName": {
+            "value": "MobileTodoList"
+        }        
+    }
+}
