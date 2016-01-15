@@ -10,141 +10,609 @@ Alternatively, you can deploy using the Azure Portal. [Click here to deploy](htt
 
 The Azure Mobile Apps client and server SDK support offline sync of structured data with CRUD operations against the /tables endpoint. Generally this data is stored in a database or similar store, and generally these data stores cannot store large binary data efficiently. Also, some applications have related data that is stored elsewhere (e.g., blob storage, SharePoint), and it is useful to be able to create associations between records in the /tables endpoint and other data.
 
+This topic shows you how to add support for images to the Mobile Apps todo list quickstart. You must first complete the tutorial [Get started with Mobile Apps](app-service-mobile-xamarin-forms-get-started.md).
+
+In this tutorial, you will create a storage account and add a connection string to your Mobile App backend. You will then add a new inheriting from the new Mobile Apps type `StorageController<T>` to your server project.
+
+>[AZURE.TIP] This tutorial has a [companion sample](https://azure.microsoft.com/en-us/documentation/samples/app-service-mobile-dotnet-todolist-files/) available, which can be deployed to your own Azure account. 
+
+### Features
+
 The file management feature of the Azure Mobile Apps SDK removes these limitations, and supports the following:
 
 - Secure client and server model, using SAS tokens (shared access signature) for client access to blob storage:
     - Turnkey methods for requesting and retrieving SAS tokens with particular permissions (e.g., upload, download)
     - Flexibility over SAS expiration policy
+
 - Scalable and efficient communication. Client performs upload and download operations directly against blob storage, so the mobile backend does not create a bottleneck
 
 - Flexible association of files and records. Files can be associated based on container name, blob name, or any other naming convention, by supplying a custom `IContainerNameResolver`. Association can be 1:1, 1:many, etc.
 
 - Client-side support for association of files and records. Files are simply data that is related to a record, and do not need to be managed separately by the developer.
 
-- Flexible client-side file management. The client SDK uses file paths only, and does not place any requirements on how the files are stored on the device. 
-
 - Flexibility over how clients download files. The client SDK has callbacks to notify of added or removed files, and the app developer can decide whether to download files immediately and store them, or download later based on user action.
 
 - Offline sync support for file upload and download. A client app can queue upload and download operations for when there is network connectivity.
 
+## Prerequisites
 
-##Azure Mobile Server SDK for Files
-In order to support the file management capabilities exposed by the client SDK, the following changes were made to the service:
+To complete this tutorial, you need the following:
 
- - A storage controller named ```TodoItemStorageController``` (inheriting from the new Mobile Apps type ```StorageController<T>```) was created
-	 - Storage token issuance
-	 - File delete operations
-	 - File list operations
- - The storage account *connection string* was added to the service settings
-	 - The default configuration key is *MS_AzureStorageAccountConnectionString*,  in the Connection Strings section of your Web App configuration.
-	 - To use a different connection string value, pass it to the constructor of `StorageController`.
-	 
-###Storage API resources
-The new controller exposes two sub-resources under the record it manages:
+* An active Azure account. If you don't have an account, you can sign up for an Azure trial and get up to 10 free web and mobile apps that you can keep using even after your trial ends. For details, see [Azure Free Trial](http://azure.microsoft.com/pricing/free-trial/).
 
- - StorageToken
-	 - HTTP POST : Creates a storage token
-		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
- - MobileServiceFiles
-	 - HTTP GET: Retrieves a list of files associated with the record
-		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles```
-	 - HTTP DELETE: Deletes the file specified in the file resource identifier
-		 - ```/tables/{item_type_name}/{id}/MobileServiceFiles/{fileid}```
+* [Visual Studio Community 2015](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx) or higher.  You can install the Xamarin tools when you install Visual Studio 2015.
 
-###IContainerNameResolver
-The *To do list* sample uses the default behavior, with one container per record. If a custom container mapping or naming convention is desired, a custom ```IContainerNameResolver``` may be passed into the token generation or file management controller methods. If provided, this custom resolver will be used any time the runtime needs to resolve a container name for a record or file.
+* A Mac with [Xcode](https://go.microsoft.com/fwLink/?LinkID=266532) v7.0 or later and [Xamarin Studio](http://xamarin.com/download) installed.
 
+## Create a storage account
 
-##Mobile Apps Client SDK
-###Offline file management
-The Azure Mobile Apps Client SDK provides offline file management support, allowing you to synchronize file changes when network connectivity is available.
+1. Create a storage account by following the tutorial [Create an Azure Storage Account](https://azure.microsoft.com/en-us/documentation/articles/storage-create-storage-account/). 
 
-The updated *To do list app* takes advantage of this functionality to expose the following features:
+2. In the Azure Portal, navigate to your newly created storage account and click the **Keys** icon. Copy the **Primary Connection String**.
 
- - Allow users to associate files with *to do* items (multiple files per item)
- - All changes are local, until a user taps the *synchronize* button
- - Items and files created by other users are automatically downloaded by the application, making them available offline
- - Items and files deleted by other users are removed from the local device
+3. Navigate to your mobile app backend. Under **All Settings** -> **Application Settings** -> **Connection Strings**, create a new key named `MS_AzureStorageAccountConnectionString` and use the value copied from your storage account. Use **Custom** as the key type.
 
-When working in offline mode, file management operations are saved locally, until the application synchronizes those changes (typically when network availability is restored or when the user explicitly requests a synchronization via an application gesture).
+## Add a storage controller to your server project
 
-The diagram below shows the sequence of operations for a file creation:
+1. In Visual Studio, open your .NET server project. Add the NuGet package [Microsoft.Azure.Mobile.Server.Files](https://www.nuget.org/packages/Microsoft.Azure.Mobile.Server.Files/). Be sure to select **Include prerelease**.
 
-```sequence
-Application code->Azure Mobile Apps SDK: Create file X
-Azure Mobile Apps SDK->Azure Mobile Apps SDK: Queue create file X operation
-Application code->Azure Mobile Apps SDK: Push file changes
-Azure Mobile Apps SDK->Application code: Get file X data
-Application code->Azure Mobile Apps SDK: File X data
-Azure Mobile Apps SDK->Azure Storage: Upload file
-```
+2. In Visual Studio, open your .NET server project. Right-click the **Controllers** folder and select **Add** -> **Controller** -> **Web API 2 Controller - Empty**. Name the controller `TodoItemStorageController`.
 
-It's important to understand that the Azure Mobile Services Client SDK will not store the file data. The client SDK will invoke your code when it needs File contents will be requested. The application (your code) decides how (and if) files are stored on the local device.
+3. Add the following using statements:
 
-####IFileSyncHandler
-The Azure Mobile Services SDK interacts with the application code as part of the file management and synchronization process. This communication takes place using the IFileSyncHandler implementation provided by the application (your code).
+        using Microsoft.Azure.Mobile.Server.Files;
+        using Microsoft.Azure.Mobile.Server.Files.Controllers;
 
-IFileSyncHandler is a simple interface with the following definition:
+4. Change the base class to `StorageController`:
+    
+        public class TodoItemStorageController : StorageController<TodoItem>
 
-     public interface IFileSyncHandler
+5. Add the following methods to the class:
+
+        [HttpPost]
+        [Route("tables/TodoItem/{id}/StorageToken")]
+        public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest value)
         {
-            Task<IMobileServiceFileDataSource> GetDataSource(MobileServiceFileMetadata metadata);
+            StorageToken token = await GetStorageTokenAsync(id, value);
 
-            Task ProcessFileSynchronizationAction(MobileServiceFile file, FileSynchronizationAction action);
+            return Request.CreateResponse(token);
         }
 
-```GetDataSource``` is called when the Azure Mobile Services Client SDK needs the file data (e.g.: as part of the upload process). This gives you the ability manage how (and if) files are stored on the local device and return that information when needed.
+        // Get the files associated with this record
+        [HttpGet]
+        [Route("tables/TodoItem/{id}/MobileServiceFiles")]
+        public async Task<HttpResponseMessage> GetFiles(string id)
+        {
+            IEnumerable<MobileServiceFile> files = await GetRecordFilesAsync(id);
 
-```ProcessFileSynchronizationAction``` is invoked as part of the file synchronization flow. A file reference and a FileSynchronizationAction enumeration value are provided so you can decide how your application should handle that event (e.g. automatically downloading a file when it is created or updated, deleting a file from the local device when that file is deleted on the server).
+            return Request.CreateResponse(files);
+        }
 
-When initializing the file synchronization runtime, your application must supply a concrete implementation of the ```IFileSyncHandler```, as shown below:
+        [HttpDelete]
+        [Route("tables/TodoItem/{id}/MobileServiceFiles/{name}")]
+        public Task Delete(string id, string name)
+        {
+            return base.DeleteFileAsync(id, name);
+        }
 
-    MobileServiceClient client = new MobileServiceClient("app_url", "gateway_url", "application_key");
+6. Publish your server project to your mobile app backend.
 
-    // . . . Other initialization code (local store, sync context, etc.)
-    client.InitializeFileSync(new MyFileSyncHandler(), store);
+## Update your client app to add image support
 
-> The ```IFileSyncHandler``` implementation in the *To do list* application is defined in the ```TodoItemFileSyncHandler.cs``` file.
+Open the Xamarin.Forms quickstart project in either Visual Studio or Xamarin Studio.
 
-####Creating and uploading a file
-The most common way of working with the file management API is through a set of extension methods on the ```IMobileServiceTable<T>``` interface, so in order to use the API, you must have a reference to the table you're working with.
+###Add NuGet packages
 
-    using Microsoft.WindowsAzure.MobileServices.Files;
-    ...
+Right-click the solution and select **Manage NuGet packages for solution**. Add the following NuGet packages to **all** projects in the solution. Be sure to check **Include prerelease**.
 
-    MobileServiceFile file = await myTable.AddFileAsync(myItem, "file_name");
+  - [Microsoft.Azure.Mobile.Client.Files](https://www.nuget.org/packages/Microsoft.Azure.Mobile.Client.Files/1.0.0-beta-2) 
 
-In the offline scenario, the upload will occur when the application initiates a synchronization, when that happens, the runtime will begin processing the operations queue and, once it finds this operation, it will invoke the ```GetDataSource``` method on the ```IFileSynchHandler``` instance provided by the application in order to retrieve the file contents for the upload.
+  - [Microsoft.Azure.Mobile.Client.SQLiteStore](https://www.nuget.org/packages/Microsoft.Azure.Mobile.Client.SQLiteStore/)
 
->The file management enabled version of the *To do list* application maintains the pattern used in 
->the *To do list* quick start and maintains all file management operations in the ```TodoItemManager.cs``` file
+  - [PCLStorage](https://www.nuget.org/packages/PCLStorage/)
 
-####Deleting a file
-To delete a file, you can follow the same pattern described above and use the ```DeleteFileAsync``` method on the ```IMobileServiceTable<T>``` instance:
+###Add FileHelper class
 
-    using Microsoft.WindowsAzure.MobileServices.Files;
-    ...
+1. Create a new class `FileHelper` in the main portable library project. Add the following using statements:
 
-    await myTable.DeleteFileAsync(file);
+        using System.IO;
+        using PCLStorage;
+        using System.Threading.Tasks;
+        using Xamarin.Forms;
 
-In the offline scenario, the file deletion will occur when the application initiates a synchronization.
+2. Add the class definition:
 
-####Retrieve an item's files
-As mentioned in the *Azure Mobile Services File Management* section, files are managed through its associated record. In order to retrieve an item's files, you can call the ```GetFilesAsync``` method on the  ```IMobileServiceTable<T>``` instance. 
+        public class FileHelper
+        {
+            public static async Task<string> CopyTodoItemFileAsync(string itemId, string filePath)
+            {
+                IFolder localStorage = FileSystem.Current.LocalStorage;
 
-    IEnumerable<MobileServiceFile> files = await myTable.GetFilesAsync(myItem);
+                string fileName = Path.GetFileName(filePath);
+                string targetPath = await GetLocalFilePathAsync(itemId, fileName);
 
-This method returns a list of files associated with the data item provided. It's important to remember that this is a ***local*** operation and will return the files based on the state of the object when it was last synchronized.
+                var sourceFile = await localStorage.GetFileAsync(filePath);
+                var sourceStream = await sourceFile.OpenAsync(FileAccess.Read);
 
-To get an updated list of files from the server, you can initiate a sync operation as described in the *synchronizing file changes* section.
+                var targetFile = await localStorage.CreateFileAsync(targetPath, CreationCollisionOption.ReplaceExisting);
 
->On the *To do list* sample application, the item's images are retrieved in the ```TodoItemViewModel``` class.
+                using (var targetStream = await targetFile.OpenAsync(FileAccess.ReadAndWrite)) {
+                    await sourceStream.CopyToAsync(targetStream);
+                }
 
-####Client sync process
+                return targetPath;
+            }
 
-> NOTE:
-> For clarity, this section describes the approach taken by the *To do list* application. This is temporary and **will** change in future iterations of the file management feature.
+            public static async Task<string> GetLocalFilePathAsync(string itemId, string fileName)
+            {
+                IPlatform platform = DependencyService.Get<IPlatform>();
 
-The *To do list* application detects record changes when performing a standard data pull operation and uses that as a trigger to retrieve potential file changes.
+                string recordFilesPath = Path.Combine(await platform.GetTodoFilesPathAsync(), itemId);
 
-To detect changes, the *To do list* application uses a custom ```MobileServiceLocalStore``` (located under the *Helpers* project folder) that wraps the built in ```MobileServiceSQLiteStore``` and raises a change event when the runtime creates, updates or deletes records. This event is used by the application to initiate a file synchronization operation for the changed record.
+                    var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
+                    if (checkExists == ExistenceCheckResult.NotFound) {
+                        await FileSystem.Current.LocalStorage.CreateFolderAsync(recordFilesPath, CreationCollisionOption.ReplaceExisting);
+                    }
+
+                return Path.Combine(recordFilesPath, fileName);
+            }
+
+            public static async Task DeleteLocalFileAsync(Microsoft.WindowsAzure.MobileServices.Files.MobileServiceFile fileName)
+            {
+                string localPath = await GetLocalFilePathAsync(fileName.ParentId, fileName.Name);
+                var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(localPath);
+
+                if (checkExists == ExistenceCheckResult.FileExists) {
+                    var file = await FileSystem.Current.LocalStorage.GetFileAsync(localPath);
+                    await file.DeleteAsync();
+                }
+            }
+
+### Add a file sync handler
+
+Create a new class `TodoItemFileSyncHandler` in the main portable library project.
+
+1. Add the following using statements:
+
+        using System.Threading.Tasks;
+        using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+        using Microsoft.WindowsAzure.MobileServices.Files;
+        using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
+        using Xamarin.Forms;
+
+2. Replace the class definition with the following: 
+
+        public class TodoItemFileSyncHandler : IFileSyncHandler
+        {
+            private readonly TodoItemManager todoItemManager;
+
+            public TodoItemFileSyncHandler(TodoItemManager itemManager)
+            {
+                this.todoItemManager = itemManager;
+            }
+
+            public Task<IMobileServiceFileDataSource> GetDataSource(MobileServiceFileMetadata metadata)
+            {
+                IPlatform platform = DependencyService.Get<IPlatform>();
+                return platform.GetFileDataSource(metadata);
+            }
+
+            public async Task ProcessFileSynchronizationAction(MobileServiceFile file, FileSynchronizationAction action)
+            {
+                if (action == FileSynchronizationAction.Delete) {
+                    await FileHelper.DeleteLocalFileAsync(file);
+                }
+                else { // Create or update. We're aggressively downloading all files.
+                    await this.todoItemManager.DownloadFileAsync(file);
+                }
+            }
+        }
+
+###Add IPlatform interface
+
+Create a new interface `IPlatform` in the main portable library project:
+
+    public interface IPlatform
+    {
+        Task <string> GetTodoFilesPathAsync();
+
+        Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata);
+
+        Task<string> TakePhotoAsync(object context);
+
+        Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename);
+    }
+
+###Update TodoItemManager
+
+1. In **TodoItemManager.cs**, uncomment the line `#define OFFLINE_SYNC_ENABLED`.
+
+2. In **TodoItemManager.cs**, add the following using statements:
+
+        using System.IO;
+        using Xamarin.Forms;
+        using Microsoft.WindowsAzure.MobileServices.Files;
+        using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+        using Microsoft.WindowsAzure.MobileServices.Eventing;
+
+3. In the constructor of `TodoItemManager`, add the following after the call to `DefineTable()`:
+
+        // Initialize file sync
+        this.client.InitializeFileSyncContext(new TodoItemFileSyncHandler(this), store);
+
+4. In the constructor, replace the call to `InitializeAsync` with the following:
+
+        client.SyncContext.InitializeAsync(store, StoreTrackingOptions.NotifyLocalAndServerOperations);
+
+5. In `SyncAsync()`, add the following after the call to `PushAsync()`:
+
+        await this.todoTable.PushFileChangesAsync();
+
+6. Add the following methods to `TodoItemManager`:
+
+        internal async Task DownloadFileAsync(MobileServiceFile file)
+        {
+            var todoItem = await todoTable.LookupAsync(file.ParentId);
+            IPlatform platform = DependencyService.Get<IPlatform>();
+
+            string filePath = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name); 
+            await platform.DownloadFileAsync(this.todoTable, file, filePath);
+        }
+
+        internal async Task<MobileServiceFile> AddImage(TodoItem todoItem, string imagePath)
+        {
+            string targetPath = await FileHelper.CopyTodoItemFileAsync(todoItem.ID, imagePath);
+            return await this.todoTable.AddFileAsync(todoItem, Path.GetFileName(targetPath));
+        }
+
+        internal async Task DeleteImage(TodoItem todoItem, MobileServiceFile file)
+        {
+            await this.todoTable.DeleteFileAsync(file);
+        }
+
+        internal async Task<IEnumerable<MobileServiceFile>> GetImageFilesAsync(TodoItem todoItem)
+        {
+            return await this.todoTable.GetFilesAsync(todoItem);
+        }
+
+###Add a details view
+
+1. Add a new class **TodoItemImage** to the portable library project with the following implementation:
+
+        public class TodoItemImage : INotifyPropertyChanged
+        {
+            private string name;
+            private string uri;
+
+            public MobileServiceFile File { get; private set; }
+
+            public string Name
+            {
+                get { return name; }
+                set
+                {
+                    name = value;
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+
+            public string Uri
+            {
+                get { return uri; }      
+                set
+                {
+                    uri = value;
+                    OnPropertyChanged(nameof(Uri));
+                }
+            }
+
+            public TodoItemImage(MobileServiceFile file, TodoItem todoItem)
+            {
+                Name = file.Name;
+                File = file;
+
+                FileHelper.GetLocalFilePathAsync(todoItem.Id, file.Name).ContinueWith(x => this.Uri = x.Result);
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            private void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+2. Edit **App.cs**. Replace the initialization of `MainPage` with the following:
+    
+        MainPage = new NavigationPage(new TodoList());
+
+3. Right-click the portable library project and select **Add** -> **New Item** -> **Cross-platform** -> **Forms Xaml Page**. Name the view `TodoItemDetailsView`.
+
+4. Open **TodoItemDetailsView.xaml** and replace the body of the ContentPage with the following:
+
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+          <Button Command="{Binding AddImageCommand}" Text="Add image"></Button>
+          <ListView x:Name="imagesList"
+                    ItemsSource="{Binding Images}"
+                    IsPullToRefreshEnabled="false"
+                    Grid.Row="2">
+            <ListView.ItemTemplate>
+              <DataTemplate>
+                <ImageCell ImageSource="{Binding Uri}"
+                            Text="{Binding Name}">
+                  <ImageCell.ContextActions >
+                    <MenuItem Text="Delete" Command="{Binding DeleteCommand}" IsDestructive="True" CommandParameter="{Binding .}"/>
+                  </ImageCell.ContextActions>
+                </ImageCell>
+              </DataTemplate>
+            </ListView.ItemTemplate>
+          </ListView>
+        </Grid>
+
+5. Edit **TodoItemDetailsView.xaml.cs** and replace the implementation with the following:
+
+        public partial class TodoItemDetailsView : ContentPage
+        {
+            private TodoItemManager manager;
+
+            public TodoItem TodoItem { get; set; }        
+            public ObservableCollection<TodoItemImage> Images { get; set; }
+
+            public TodoItemDetailsView(TodoItem todoItem, TodoItemManager manager)
+            {
+                InitializeComponent();
+                this.Title = todoItem.Name;
+
+                this.TodoItem = todoItem;
+                this.manager = manager;
+
+                this.Images = new ObservableCollection<TodoItemImage>();
+                this.BindingContext = this;
+            }
+
+            public async Task LoadImagesAsync()
+            {
+                IEnumerable<MobileServiceFile> files = await this.manager.GetImageFilesAsync(TodoItem);
+                this.Images.Clear();
+
+                foreach (var f in files) {
+                    var todoImage = new TodoItemImage(f, this.TodoItem);
+                    this.Images.Add(todoImage);
+                }
+            }
+
+            public async void OnAdd(object sender, EventArgs e)
+            {
+                IPlatform mediaProvider = DependencyService.Get<IPlatform>();
+                string sourceImagePath = await mediaProvider.TakePhotoAsync(App.UIContext);
+
+                if (sourceImagePath != null) {
+                    MobileServiceFile file = await this.manager.AddImage(this.TodoItem, sourceImagePath);
+
+                    var image = new TodoItemImage(file, this.TodoItem);
+                    this.Images.Add(image);
+                }
+            }
+        }
+
+###Update the main view 
+
+In **TodoList.xaml.cs**, replace the implementation of `OnSelected` with the following:
+
+    public async void OnSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        var todo = e.SelectedItem as TodoItem;
+
+        if (todo != null) {
+            var detailsView = new TodoItemDetailsView(todo, manager);
+            await detailsView.LoadImagesAsync();
+            await Navigation.PushAsync(detailsView);
+        }
+
+        todoList.SelectedItem = null;
+    }
+
+###Update the Android project
+
+1. Add the component **Xamarin.Mobile** to the Android project.
+
+2. Add a new class `DroidPlatform` with the following implementation. Replace "YourNamespace" with the main namespace of your project.
+
+        using System;
+        using System.IO;
+        using System.Threading.Tasks;
+        using Android.Content;
+        using Microsoft.WindowsAzure.MobileServices.Files;
+        using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
+        using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+        using Microsoft.WindowsAzure.MobileServices.Sync;
+        using Xamarin.Media;
+
+        [assembly: Xamarin.Forms.Dependency(typeof(YourNamespace.Droid.DroidPlatform))]
+        namespace YourNamespace.Droid
+        {
+            public class DroidPlatform : IPlatform
+            {
+                public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
+                {
+                    var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+                    await table.DownloadFileAsync(file, path);
+                }
+
+                public async Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata)
+                {
+                    var filePath = await FileHelper.GetLocalFilePathAsync(metadata.ParentDataItemId, metadata.FileName);
+                    return new PathMobileServiceFileDataSource(filePath);
+                }
+
+                public async Task<string> TakePhotoAsync(object context)
+                {
+                    try {
+                        var uiContext = context as Context;
+                        if (uiContext != null) {
+                            var mediaPicker = new MediaPicker(uiContext);
+                            var photo = await mediaPicker.TakePhotoAsync(new StoreCameraMediaOptions());
+
+                            return photo.Path;
+                        }
+                    }
+                    catch (TaskCanceledException) {
+                    }
+
+                    return null;
+                }
+
+                public Task<string> GetTodoFilesPathAsync()
+                {
+                    string appData = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    string filesPath = Path.Combine(appData, "TodoItemFiles");
+
+                    if (!Directory.Exists(filesPath)) {
+                        Directory.CreateDirectory(filesPath);
+                    }
+
+                    return Task.FromResult(filesPath);
+                }
+            }
+        }
+
+3. Edit **MainActivity.cs**. In `OnCreate`, add the following before the call to `LoadApplication()`:
+
+        App.UIContext = this;
+
+###Update the iOS project
+
+1. Add the component **Xamarin.Mobile** to the iOS project.
+
+2. Add a new class `TouchPlatform` with the following implementation. Replace "YourNamespace" with the main namespace of your project.
+
+        using System;
+        using System.Collections.Generic;
+        using System.IO;
+        using System.Text;
+        using System.Threading.Tasks;
+        using Microsoft.WindowsAzure.MobileServices.Files;
+        using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
+        using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+        using Microsoft.WindowsAzure.MobileServices.Sync;
+        using Xamarin.Media;
+
+        [assembly: Xamarin.Forms.Dependency(typeof(YourNamespace.iOS.TouchPlatform))]
+        namespace YourNamespace.iOS
+        {
+            class TouchPlatform : IPlatform
+            {
+                public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
+                {
+                    var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+                    await table.DownloadFileAsync(file, path);
+                }
+
+                public async Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata)
+                {
+                    var filePath = await FileHelper.GetLocalFilePathAsync(metadata.ParentDataItemId, metadata.FileName);
+                    return new PathMobileServiceFileDataSource(filePath);
+                }
+
+                public async Task<string> TakePhotoAsync(object context)
+                {
+                    try {
+                        var mediaPicker = new MediaPicker();
+                        var mediaFile = await mediaPicker.PickPhotoAsync();
+                        return mediaFile.Path;
+                    }
+                    catch (TaskCanceledException) {
+                        return null;
+                    }
+                }
+
+                public Task<string> GetTodoFilesPathAsync()
+                {
+                    string filesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TodoItemFiles");
+
+                    if (!Directory.Exists(filesPath)) {
+                        Directory.CreateDirectory(filesPath);
+                    }
+
+                    return Task.FromResult(filesPath);
+                }
+            }
+        }
+
+3. Edit **AppDelegate.cs** and uncomment the call to `SQLitePCL.CurrentPlatform.Init()`.
+
+###Update the Windows project
+
+>[AZURE.NOTE] This tutorial only contains instructions for the Android, iOS, and Windows Store platforms, not Windows Phone.
+
+1. Install the Visual Studio extension [SQLite for Windows 8.1](http://go.microsoft.com/fwlink/?LinkID=716919). 
+For more information, see the tutorial [Enable offline sync for your Windows app](app-service-mobile-windows-store-dotnet-get-started-offline-data.md). 
+
+2. Edit **Package.appxmanifest** and check the **Webcam** capability.
+
+3. Add a new class `WindowsStorePlatform` with the following implementation:
+
+        using System;
+        using System.Threading.Tasks;
+        using Microsoft.WindowsAzure.MobileServices.Files;
+        using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
+        using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+        using Microsoft.WindowsAzure.MobileServices.Sync;
+        using MobileAppsFilesSample;
+        using Windows.Foundation;
+        using Windows.Media.Capture;
+        using Windows.Storage;
+
+        [assembly: Xamarin.Forms.Dependency(typeof(WinApp.WindowsStorePlatform))]
+        namespace WinApp
+        {
+            public class WindowsStorePlatform : IPlatform
+            {
+                public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
+                {
+                    var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+                    await table.DownloadFileAsync(file, path);
+                }
+
+                public async Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata)
+                {
+                    var filePath = await FileHelper.GetLocalFilePathAsync(metadata.ParentDataItemId, metadata.FileName);
+                    return new PathMobileServiceFileDataSource(filePath);
+                }
+
+                public async Task<string> GetTodoFilesPathAsync()
+                {
+                    var storageFolder = ApplicationData.Current.LocalFolder;
+                    var filePath = "TodoItemFiles";
+
+                    var result = await storageFolder.TryGetItemAsync(filePath);
+
+                    if (result == null) {
+                        result = await storageFolder.CreateFolderAsync(filePath);
+                    }
+
+                    return result.Name; // later operations will use relative paths
+                }
+
+                public async Task<string> TakePhotoAsync(object context)
+                {
+                    try {
+                        CameraCaptureUI dialog = new CameraCaptureUI();
+                        Size aspectRatio = new Size(16, 9);
+                        dialog.PhotoSettings.CroppedAspectRatio = aspectRatio;
+
+                        StorageFile file = await dialog.CaptureFileAsync(CameraCaptureUIMode.Photo);
+                        return file.Path;
+                    }
+                    catch (TaskCanceledException) {
+                        return null;
+                    }
+                }
+            }
+        }
+
