@@ -57,7 +57,7 @@
         "webSiteName":"[concat(parameters('appName'), uniqueString(resourceGroup().id))]",
         "sqlserverName": "[concat(toLower(parameters('appName')), uniqueString(resourceGroup().id))]",
         "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'standardsa')]",
-        "repoUrl": "https://github.com/lindydonna/MobileAppsFilesSample"
+        "repoUrl": "https://github.com/Azure-Samples/app-service-mobile-dotnet-todo-list-files"
     },
     "resources": [
         {
