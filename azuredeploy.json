@@ -35,13 +35,22 @@
             }
         },
         "administratorLogin": {
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Database admin username to create"
+            }
         },
         "administratorLoginPassword": {
-            "type": "securestring"
+            "type": "securestring",
+            "metadata": {
+                "description": "New SQL database admin password"
+            }            
         },
         "databaseName": {
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Name of SQL database to create"
+            }            
         }
     },
     "variables": {
@@ -105,7 +114,7 @@
             "properties": {
                 "accountType": "Standard_LRS"
             }
-        },        
+        },
         {
             "apiVersion": "2015-08-01",
             "name": "[parameters('hostingPlanName')]",
