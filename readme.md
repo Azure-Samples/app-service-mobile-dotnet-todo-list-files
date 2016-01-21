@@ -10,7 +10,7 @@ author: lindydonna
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
-Alternatively, you can deploy using the Azure Portal. [Click here to deploy](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fapp-service-mobile-dotnet-todo-list-files%2Fmaster%2Fazuredeploy.json).
+[Click here to deploy](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fapp-service-mobile-dotnet-todo-list-files%2Fmaster%2Fazuredeploy.json).
 
 ## Overview
 
