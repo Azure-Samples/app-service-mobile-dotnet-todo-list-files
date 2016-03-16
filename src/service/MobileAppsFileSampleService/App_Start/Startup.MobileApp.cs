@@ -6,6 +6,7 @@ using System.Web.Http.Description;
 using Microsoft.Azure.Mobile.Server;
 using Microsoft.Azure.Mobile.Server.Config;
 using Microsoft.Azure.Mobile.Server.Swagger;
+using Microsoft.Azure.Mobile.Server.Tables.Config;
 using MobileAppsFileSampleService.DataObjects;
 using MobileAppsFileSampleService.Models;
 using Owin;
@@ -25,7 +26,12 @@ namespace MobileAppsFileSampleService
             config.MapHttpAttributeRoutes();
 
             new MobileAppConfiguration()
-                .UseDefaultConfiguration()
+                .MapApiControllers()
+                .AddTables(                               // from the Tables package
+                    new MobileAppTableConfiguration()
+                        .MapTableControllers()
+                        .AddEntityFramework()             // from the Entity package
+                    )
                 .ApplyTo(config);
 
             // Use Entity Framework Code First to create database tables based on your DbContext
