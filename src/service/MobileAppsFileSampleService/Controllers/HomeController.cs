@@ -112,7 +112,8 @@ namespace MobileAppsFileSampleService
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
             TodoItem todoItem = await db.TodoItems.FindAsync(id);
-            db.TodoItems.Remove(todoItem);
+            todoItem.Deleted = true;
+            db.Entry(todoItem).State = EntityState.Modified;
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
