@@ -52,6 +52,9 @@ namespace MobileAppsFileSampleService
         {
             if (ModelState.IsValid)
             {
+                if (todoItem.Id == null)
+                    todoItem.Id = new Guid().ToString();
+
                 db.TodoItems.Add(todoItem);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
