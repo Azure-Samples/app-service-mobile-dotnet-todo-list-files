@@ -14,7 +14,7 @@
         "administratorLoginPassword": {
             "value": "Not$ecurePassw0rd"
         },
-        "appName": {
+        "siteName": {
             "value": "MobileTodoList"
         }        
     }
