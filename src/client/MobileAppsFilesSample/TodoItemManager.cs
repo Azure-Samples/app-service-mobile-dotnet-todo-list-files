@@ -30,7 +30,9 @@ namespace MobileAppsFilesSample
             var result = new TodoItemManager();
             result.client = new MobileServiceClient(Constants.ApplicationURL);
 
+            //var store = new MobileServiceSQLiteStore("localstore2.db" + DateTime.UtcNow.Ticks);
             var store = new MobileServiceSQLiteStore("localstore.db");
+
             store.DefineTable<TodoItem>();
 
             // Initialize file sync
@@ -133,9 +135,7 @@ namespace MobileAppsFilesSample
             Debug.WriteLine ("++ Downloading file: " + todoItem.Name);
 
             IPlatform platform = DependencyService.Get<IPlatform>();
-
-            string filePath = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name); 
-            await platform.DownloadFileAsync(this.todoTable, file, filePath);
+            await platform.DownloadFileAsync(this.todoTable, file);
         }
 
         internal async Task<MobileServiceFile> AddImage(TodoItem todoItem, string imagePath)

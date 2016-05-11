@@ -14,7 +14,7 @@ namespace MobileAppsFilesSample.iOS
 {
     class TouchPlatform : IPlatform
     {
-        public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
+        public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file)
         {
             var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
             await table.DownloadFileAsync(file, path);

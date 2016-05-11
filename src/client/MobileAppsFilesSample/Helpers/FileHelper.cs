@@ -33,14 +33,17 @@ namespace MobileAppsFilesSample
         {
             IPlatform platform = DependencyService.Get<IPlatform>();
 
-            string recordFilesPath = Path.Combine(await platform.GetTodoFilesPathAsync(), itemId);
+            string rootPath = await platform.GetTodoFilesPathAsync();
 
-                var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
-                if (checkExists == ExistenceCheckResult.NotFound) {
-                    await FileSystem.Current.LocalStorage.CreateFolderAsync(recordFilesPath, CreationCollisionOption.ReplaceExisting);
-                }
+            var folder = await FileSystem.Current.GetFolderFromPathAsync(rootPath);
 
-            return Path.Combine(recordFilesPath, fileName);
+            var checkExists = await folder.CheckExistsAsync(itemId);
+            if (checkExists == ExistenceCheckResult.NotFound) {
+                await folder.CreateFolderAsync(itemId, CreationCollisionOption.ReplaceExisting);
+            }
+
+            var fullPath = Path.Combine(rootPath, itemId, fileName);
+            return fullPath;
         }
 
         public static async Task DeleteLocalFileAsync(Microsoft.WindowsAzure.MobileServices.Files.MobileServiceFile fileName)
@@ -53,16 +56,5 @@ namespace MobileAppsFilesSample
                 await file.DeleteAsync();
             }
         }
-
-        //private static string GetFilesDirectory()
-        //{
-        //    string filesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TodoItemFiles");
-
-        //    if (!Directory.Exists(filesPath)) {
-        //        Directory.CreateDirectory(filesPath);
-        //    }
-
-        //    return null;
-        //}
     }
 }
