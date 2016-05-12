@@ -18,6 +18,6 @@ namespace MobileAppsFilesSample
 
         Task<string> TakePhotoAsync(object context);
 
-        Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename);
+        Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file);
     }
 }

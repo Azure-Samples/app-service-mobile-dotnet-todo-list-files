@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
@@ -14,9 +15,17 @@ namespace WinApp
 {
     public class WindowsStorePlatform : IPlatform
     {
-        public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
+        public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file)
         {
             var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+            var folder = Path.GetDirectoryName(path);
+
+            var storageFolder = await StorageFolder.GetFolderFromPathAsync(folder);
+
+            if (await storageFolder.TryGetItemAsync(file.Name) == null) {
+                await storageFolder.CreateFileAsync(file.Name);
+            }
+
             await table.DownloadFileAsync(file, path);
         }
 
@@ -37,7 +46,8 @@ namespace WinApp
                 result = await storageFolder.CreateFolderAsync(filePath);
             }
 
-            return result.Name; // later operations will use relative paths
+            // return result.Name; // later operations will use relative paths
+            return result.Path;
         }
 
         public async Task<string> TakePhotoAsync(object context)
